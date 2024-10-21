@@ -1,0 +1,355 @@
+{
+  "characters": [
+    {
+      "id": 1,
+      "name": "Rogue",
+      "hp": 10,
+      "maxHp": 20,
+      "gold": 5,
+      "rations": 3,
+      "armor": 0,
+      "exp": 0,
+      "whiteDice": 1,
+      "offensivePotion": null,
+      "defensivePotion": null,
+      "skills": [
+        { "name": "Coup sournois", "usageType": "combat" },
+        { "name": "Furtivité", "usageType": "chamber" }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Mage",
+      "hp": 11,
+      "maxHp": 20,
+      "gold": 3,
+      "rations": 4,
+      "armor": 0,
+      "exp": 0,
+      "whiteDice": 1,
+      "offensivePotion": "Potion de feu",
+      "defensivePotion": "Potion de perception",
+      "skills": [
+        { "name": "Boule de feu", "usageType": "combat" },
+        { "name": "Barrière magique", "usageType": "chamber" }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Prêtresse",
+      "hp": 13,
+      "maxHp": 13,
+      "gold": 2,
+      "rations": 3,
+      "armor": 0,
+      "exp": 0,
+      "whiteDice": 1,
+      "items": [{ "name": "Bénédiction", "quantity": 1 }],
+      "skills": [
+        { "name": "Soin divin", "usageType": "combat" },
+        { "name": "Protection sacrée", "usageType": "chamber" }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Croisé",
+      "hp": 10,
+      "maxHp": 10,
+      "gold": 0,
+      "rations": 4,
+      "armor": 1,
+      "exp": 0,
+      "whiteDice": 1,
+      "skills": [
+        { "name": "Frappe divine", "usageType": "combat" },
+        { "name": "Aura de courage", "usageType": "chamber" }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Barbare",
+      "hp": 14,
+      "maxHp": 14,
+      "gold": 1,
+      "rations": 5,
+      "armor": 0,
+      "exp": 0,
+      "whiteDice": 1,
+      "skills": [
+        { "name": "Rage berserk", "usageType": "combat" },
+        { "name": "Cri de guerre", "usageType": "chamber" }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Archer",
+      "hp": 12,
+      "maxHp": 12,
+      "gold": 4,
+      "rations": 3,
+      "armor": 0,
+      "exp": 0,
+      "whiteDice": 1,
+      "skills": [
+        { "name": "Tir précis", "usageType": "combat" },
+        { "name": "Oeil de faucon", "usageType": "chamber" }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Alchimiste",
+      "hp": 11,
+      "maxHp": 20,
+      "gold": 6,
+      "rations": 2,
+      "armor": 0,
+      "exp": 0,
+      "whiteDice": 1,
+      "offensivePotion": "Potion de poison",
+      "defensivePotion": "Potion de soin",
+      "skills": [
+        { "name": "Bombe alchimique", "usageType": "combat" },
+        { "name": "Transmutation", "usageType": "chamber" }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Druide",
+      "hp": 12,
+      "maxHp": 12,
+      "gold": 2,
+      "rations": 4,
+      "armor": 0,
+      "exp": 0,
+      "whiteDice": 1,
+      "skills": [
+        { "name": "Forme animale", "usageType": "combat" },
+        { "name": "Communion avec la nature", "usageType": "chamber" }
+      ]
+    }
+  ],
+  "monsters": {
+    "1": {
+      "name": "Rat géant",
+      "hp": 6,
+      "damage": 1,
+      "reward": { "exp": 1, "gold": 1 }
+    },
+    "2": {
+      "name": "Soldat squelette",
+      "hp": 9,
+      "damage": 2,
+      "reward": { "exp": 2, "gold": 2 }
+    },
+    "3": {
+      "name": "Gobelin",
+      "hp": 12,
+      "damage": 3,
+      "reward": { "exp": 3, "gold": 3 }
+    },
+    "4": {
+      "name": "Ogre",
+      "hp": 15,
+      "damage": 4,
+      "reward": { "exp": 4, "gold": 4 }
+    },
+    "5": {
+      "name": "Dragon",
+      "hp": 20,
+      "damage": 5,
+      "reward": { "exp": 5, "gold": 5 }
+    }
+  },
+  "rooms": {
+    "treasure": [
+      { "result": [1, 2], "effect": { "gold": 2 } },
+      { "result": [3, 4], "effect": { "exp": 1 } },
+      { "result": [5, 6], "effect": { "combat": true, "reward": { "gold": 3 } } }
+    ],
+    "library": [
+      { "result": [1, 2], "effect": { "exp": 2 } },
+      { "result": [3, 4], "effect": { "skill": "random" } },
+      { "result": [5, 6], "effect": { "combat": true, "monster": "bookworm" } }
+    ],
+    "altar": [
+      { "result": [1], "effect": { "hp": -2, "exp": 3 } },
+      { "result": [2], "effect": { "gold": -3, "armor": 1 } },
+      { "result": [3], "effect": { "potion": ["bénédiction"] } },
+      { "result": [4], "effect": { "curse": "random" } },
+      { "result": [5], "effect": { "hp": 5 } },
+      { "result": [6], "effect": { "combat": true, "monster": "guardian" } }
+    ],
+    "armory": [
+      { "result": [1, 2], "effect": { "weapon": "random" } },
+      { "result": [3, 4], "effect": { "shield": "random" } },
+      { "result": [5, 6], "effect": { "combat": true, "reward": { "armor": 2 } } }
+    ],
+    "fountain": [
+      { "result": [1], "effect": { "hp": "full" } },
+      { "result": [2], "effect": { "potion": ["soin"] } },
+      { "result": [3], "effect": { "gold": -2, "exp": 2 } },
+      { "result": [4], "effect": { "curse": "poison" } },
+      { "result": [5], "effect": { "blessing": "strength" } },
+      { "result": [6], "effect": { "combat": true, "monster": "water_elemental" } }
+    ],
+    "trap": [
+      { "result": [1, 2], "effect": { "hp": -3 } },
+      { "result": [3, 4], "effect": { "gold": -2 } },
+      { "result": [5, 6], "effect": { "combat": true, "surprise": true } }
+    ],
+    "shop": [
+      { "result": [1], "effect": { "shop": "weapon" } },
+      { "result": [2], "effect": { "shop": "shield" } },
+      { "result": [3], "effect": { "shop": "potion" } },
+      { "result": [4], "effect": { "shop": "familiar" } },
+      { "result": [5], "effect": { "trade": { "gold": -5, "exp": 3 } } },
+      { "result": [6], "effect": { "combat": true, "monster": "thief" } }
+    ],
+    "crypt": [
+      { "result": [1], "effect": { "gold": 5 } },
+      { "result": [2], "effect": { "curse": "weakness" } },
+      { "result": [3], "effect": { "item": "random" } },
+      { "result": [4], "effect": { "exp": 3 } },
+      { "result": [5], "effect": { "combat": true, "monster": "skeleton" } },
+      { "result": [6], "effect": { "combat": true, "monster": "lich" } }
+    ]
+  },
+  "items": {
+    "weapons": [
+      { "id": 1, "name": "Épée courte", "damage": 1 },
+      { "id": 2, "name": "Hache de bataille", "damage": 2 }
+    ],
+    "shields": [
+      { "id": 1, "name": "Bouclier en bois", "armor": 1 },
+      { "id": 2, "name": "Bouclier en acier", "armor": 2 }
+    ],
+    "familiars": [
+      {
+        "id": 1,
+        "name": "Rat apprivoisé",
+        "effect": "Augmente les chances de trouver de l'or",
+        "bonus": {
+          "type": "goldFind",
+          "value": 1.2
+        }
+      },
+      {
+        "id": 2,
+        "name": "Fée guérisseuse",
+        "effect": "Soigne 1 PV à chaque combat",
+        "bonus": {
+          "type": "healing",
+          "value": 1
+        }
+      },
+      {
+        "id": 3,
+        "name": "Lutin chanceux",
+        "effect": "Augmente les chances de coup critique",
+        "bonus": {
+          "type": "criticalHit",
+          "value": 0.1
+        }
+      }
+    ]
+  },
+  "shop": {
+    "weapons": [
+      { "id": "w1", "name": "Épée longue", "damage": 2, "price": 50 },
+      { "id": "w2", "name": "Hache de guerre", "damage": 3, "price": 75 }
+    ],
+    "shields": [
+      { "id": "s1", "name": "Bouclier en fer", "armor": 2, "price": 40 },
+      { "id": "s2", "name": "Bouclier en acier", "armor": 3, "price": 60 }
+    ],
+    "potions": [
+      { "id": "p1", "name": "Potion de soin", "effect": "heal", "value": 5, "price": 20 },
+      { "id": "p2", "name": "Potion de force", "effect": "strength", "value": 2, "price": 30 }
+    ]
+  },
+  "tiles": [
+    {
+      "name": "Trésor",
+      "immediateReward": "+1 pièce d'or OU 2 combats et 3 pièces d'or",
+      "rollRewards": {
+        "1": "+1 pièce d'or",
+        "2": "+2 pièces d'or",
+        "3": "+5 points de vie",
+        "4": "Potion aléatoire",
+        "5": "Combat +2 pièces d'or",
+        "6": "Combat +1 armure"
+      }
+    },
+    {
+      "name": "Bibliothèque",
+      "immediateReward": "Gagnez 1 point d'expérience",
+      "rollRewards": {
+        "1": "+2 points d'expérience",
+        "2": "Apprenez une compétence aléatoire",
+        "3": "+3 points d'expérience",
+        "4": "Potion de sagesse",
+        "5": "Combat contre un Ver de livre",
+        "6": "Obtenez un parchemin magique"
+      }
+    },
+    {
+      "name": "Autel",
+      "immediateReward": "Sacrifiez 1 PV pour gagner 1 pièce d'or",
+      "rollRewards": {
+        "1": "Perdez 2 PV, gagnez 3 points d'expérience",
+        "2": "Perdez 3 pièces d'or, gagnez 1 armure",
+        "3": "Obtenez une bénédiction aléatoire",
+        "4": "Recevez une malédiction aléatoire",
+        "5": "Restaurez 5 PV",
+        "6": "Combat contre un Gardien de l'autel"
+      }
+    },
+    {
+      "name": "Armurerie",
+      "immediateReward": "+1 armure temporaire",
+      "rollRewards": {
+        "1": "Obtenez une arme aléatoire",
+        "2": "Obtenez un bouclier aléatoire",
+        "3": "+2 armure permanente",
+        "4": "Améliorez votre arme actuelle",
+        "5": "Combat +2 armure temporaire",
+        "6": "Obtenez une pièce d'armure légendaire"
+      }
+    }
+  ],
+  "dungeon": {
+    "name": "La Citadelle des Ombres",
+    "floors": [
+      {
+        "level": 1,
+        "rooms": [
+          { "number": 1, "type": "normal" },
+          { "number": 2, "type": "boss" }
+        ]
+      },
+      {
+        "level": 2,
+        "rooms": [
+          { "number": 1, "type": "normal" },
+          { "number": 2, "type": "boss" }
+        ]
+      },
+      {
+        "level": 3,
+        "rooms": [
+          { "number": 1, "type": "normal" },
+          { "number": 2, "type": "normal" },
+          { "number": 3, "type": "boss" }
+        ]
+      },
+      {
+        "level": 4,
+        "rooms": [
+          { "number": 1, "type": "normal" },
+          { "number": 2, "type": "normal" },
+          { "number": 3, "type": "boss" }
+        ]
+      }
+    ]
+  }
+}
