@@ -1,3 +1,10 @@
+<template>
+  <div id="container">
+    <main>
+      <router-view></router-view>
+    </main>
+  </div>
+</template>
 <script setup>
 import { onMounted } from 'vue'
 import { useStore } from 'vuex'
@@ -9,15 +16,6 @@ onMounted(() => {
   store.dispatch('initGame')
 })
 </script>
-
-<template>
-  <div id="container">
-    <main>
-      <router-view></router-view>
-    </main>
-  </div>
-</template>
-
 <style>
 :root {
   --color-background: #121212;

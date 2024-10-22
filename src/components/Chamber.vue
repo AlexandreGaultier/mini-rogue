@@ -19,7 +19,7 @@
                   <br>
                   Récompense : {{ tileContent(i).rollRewards[diceResults[i]] }}
                 </p>
-                <button v-if="!rewardsCollected[i]" @click.stop="collectReward(i)">Récupérer</button>
+                <button v-if="!rewardsCollected[i]" @click.stop="collectReward(i, tileContent(i).rollRewards[diceResults[i]])">Récupérer</button>
               </template>
             </div>
           </template>
@@ -34,7 +34,8 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, defineEmits } from 'vue';
+import { ref, reactive, onMounted, defineEmits, computed } from 'vue';
+import { useStore } from 'vuex';
 import gameData from '../data/game-data.json';
 
 const props = defineProps({
@@ -43,6 +44,8 @@ const props = defineProps({
     required: true
   }
 });
+
+const store = useStore();
 
 const revealedTiles = ref([1]);
 const diceResults = reactive({});
@@ -100,9 +103,10 @@ function rollDice(tileNumber) {
   }, 1000);
 }
 
-function collectReward(tileNumber) {
+function collectReward(tileNumber, reward) {
   rewardsCollected[tileNumber] = true;
-  console.log(`Récompense de la tuile ${tileNumber} récupérée`);
+  store.dispatch('applyReward', reward);
+  console.log(`Récompense de la tuile ${tileNumber} récupérée: ${reward.text}`);
 }
 
 function completeChamber() {

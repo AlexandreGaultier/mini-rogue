@@ -67,15 +67,12 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 import PotionIndicator from './PotionIndicator.vue';
 
-const props = defineProps({
-  character: {
-    type: Object,
-    required: true
-  }
-});
+const store = useStore();
+const character = computed(() => store.getters.character);
 </script>
 
 <style scoped>
