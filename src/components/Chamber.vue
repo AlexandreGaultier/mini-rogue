@@ -5,10 +5,10 @@
         <template v-if="(tileRevealed(i) || isAvailableTile(i)) && tileContent(i)">
           <h3>{{ tileContent(i).name }}</h3>
           <template v-if="isAvailableTile(i) || currentTile === i">
-            <p class="immediate-reward">{{ tileContent(i).immediateReward }}</p>
+            <p class="immediate-reward">{{ tileContent(i).immediateReward.text }}</p>
             <ul class="roll-rewards">
               <li v-for="(reward, roll) in tileContent(i).rollRewards" :key="roll">
-                {{ roll }}: {{ reward }}
+                {{ roll }}: {{ reward.text }}
               </li>
             </ul>
             <div v-if="currentTile === i" class="tile-details">
@@ -17,9 +17,9 @@
                 <p class="dice-result">
                   Résultat : {{ diceResults[i] }}
                   <br>
-                  Récompense : {{ tileContent(i).rollRewards[diceResults[i]] }}
+                  Récompense : {{ tileContent(i).rollRewards[diceResults[i]].text }}
                 </p>
-                <button v-if="!rewardsCollected[i]" @click.stop="collectReward(i, tileContent(i).rollRewards[diceResults[i]])">Récupérer</button>
+                <button v-if="!rewardsCollected[i] && diceResults[i]" @click.stop="collectReward(i)">Récupérer</button>
               </template>
             </div>
           </template>
@@ -30,11 +30,20 @@
       </div>
     </div>
     <button v-if="currentTile === 9 && rewardsCollected[9]" @click="completeChamber">Continuer</button>
+    <div v-if="newPotionNotification" class="potion-notification">
+      {{ newPotionNotification }}
+    </div>
+    <div v-if="potionOffer" class="potion-offer">
+      <h3>Nouvelle potion {{ potionOffer.type === 'offensivePotion' ? 'offensive' : 'défensive' }} disponible !</h3>
+      <p>Voulez-vous remplacer votre {{ potionOffer.currentPotion || 'aucune potion' }} par {{ potionOffer.newPotion }} ?</p>
+      <button @click="acceptNewPotion">Accepter</button>
+      <button @click="rejectNewPotion">Refuser</button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, defineEmits, computed } from 'vue';
+import { ref, reactive, computed, onMounted, watch, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import gameData from '../data/game-data.json';
 
@@ -46,6 +55,7 @@ const props = defineProps({
 });
 
 const store = useStore();
+const potionOffer = computed(() => store.getters.potionOffer);
 
 const revealedTiles = ref([1]);
 const diceResults = reactive({});
@@ -53,6 +63,7 @@ const diceRolling = reactive({});
 const rewardsCollected = reactive({});
 const currentTile = ref(1);
 const tiles = ref([]);
+const newPotionNotification = ref('');
 
 const emit = defineEmits(['chamber-completed']);
 
@@ -73,7 +84,6 @@ function selectTile(tileNumber) {
       revealedTiles.value.push(tileNumber);
     }
     currentTile.value = tileNumber;
-    console.log(`Tuile ${tileNumber} sélectionnée`);
   }
 }
 
@@ -98,27 +108,64 @@ function rollDice(tileNumber) {
     const result = Math.floor(Math.random() * 6) + 1;
     diceResults[tileNumber] = result;
     diceRolling[tileNumber] = false;
-    console.log(`Résultat du dé pour la tuile ${tileNumber}: ${result}`);
-    console.log(`Récompense: ${tileContent(tileNumber).rollRewards[result]}`);
   }, 1000);
 }
 
-function collectReward(tileNumber, reward) {
+function collectReward(tileNumber) {
+  if (rewardsCollected[tileNumber]) return;
+
+  const tile = tileContent(tileNumber);
+  const rollReward = tile.rollRewards[diceResults[tileNumber]];
+  const immediateReward = tile.immediateReward;
+
+
+  if (immediateReward) {
+    store.dispatch('applyReward', immediateReward);
+  }
+  
+  if (rollReward) {
+    store.dispatch('applyReward', rollReward);
+  }
+
   rewardsCollected[tileNumber] = true;
-  store.dispatch('applyReward', reward);
-  console.log(`Récompense de la tuile ${tileNumber} récupérée: ${reward.text}`);
 }
 
 function completeChamber() {
-  console.log("Salle terminée !");
   emit('chamber-completed');
-  // Réinitialiser les tuiles pour la prochaine salle
+  store.dispatch('nextChamber');
   initializeTiles();
   revealedTiles.value = [1];
   currentTile.value = 1;
   Object.keys(diceResults).forEach(key => delete diceResults[key]);
   Object.keys(rewardsCollected).forEach(key => delete rewardsCollected[key]);
 }
+
+watch(() => store.getters.offensivePotion, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    newPotionNotification.value = `Nouvelle potion offensive obtenue : ${newValue}`;
+    setTimeout(() => { newPotionNotification.value = ''; }, 3000);
+  }
+});
+
+watch(() => store.getters.defensivePotion, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    newPotionNotification.value = `Nouvelle potion défensive obtenue : ${newValue}`;
+    setTimeout(() => { newPotionNotification.value = ''; }, 3000);
+  }
+});
+
+function handlePotionOffer(offer) {
+  potionOffer.value = offer;
+}
+
+function acceptNewPotion() {
+  store.dispatch('acceptPotionOffer');
+}
+
+function rejectNewPotion() {
+  store.dispatch('rejectPotionOffer');
+}
+
 </script>
 
 <style scoped>
@@ -213,5 +260,35 @@ button:disabled {
   font-weight: bold;
   color: var(--color-accent);
   font-size: 0.75rem;
+}
+
+.potion-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.potion-offer {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-background);
+  border: 2px solid var(--color-border);
+  padding: 20px;
+  border-radius: 10px;
+  z-index: 1000;
+  text-align: center;
+}
+
+.potion-offer button {
+  margin: 10px;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 </style>

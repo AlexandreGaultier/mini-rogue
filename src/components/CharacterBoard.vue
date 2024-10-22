@@ -41,14 +41,16 @@
               <PotionIndicator name="Feu" type="fire" :filled="character.offensivePotion === 'Potion de feu'" />
               <PotionIndicator name="Givre" type="frost" :filled="character.offensivePotion === 'Potion de givre'" />
               <PotionIndicator name="Poison" type="poison" :filled="character.offensivePotion === 'Potion de poison'" />
+              <PotionIndicator name="Acide" type="acid" :filled="character.offensivePotion === 'Potion d\'acide'" />
             </div>
           </div>
           <div class="potion-group">
             <span>Défensive:</span>
             <div class="potion-points">
               <PotionIndicator name="Soin" type="healing" :filled="character.defensivePotion === 'Potion de soin'" />
-              <PotionIndicator name="Bénite" type="blessing" :filled="character.defensivePotion === 'Potion de bénédiction'" />
-              <PotionIndicator name="Vision" type="perception" :filled="character.defensivePotion === 'Potion de perception'" />
+              <PotionIndicator name="Bouclier" type="shield" :filled="character.defensivePotion === 'Potion de bouclier'" />
+              <PotionIndicator name="Invisibilité" type="invisibility" :filled="character.defensivePotion === 'Potion d\'invisibilité'" />
+              <PotionIndicator name="Résistance" type="resistance" :filled="character.defensivePotion === 'Potion de résistance'" />
             </div>
           </div>
         </div>
@@ -62,6 +64,14 @@
           </li>
         </ul>
       </div>
+      <div class="potions">
+        <div class="offensive-potion">
+          Potion offensive: {{ offensivePotion || 'Aucune' }}
+        </div>
+        <div class="defensive-potion">
+          Potion défensive: {{ defensivePotion || 'Aucune' }}
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -73,6 +83,9 @@ import PotionIndicator from './PotionIndicator.vue';
 
 const store = useStore();
 const character = computed(() => store.getters.character);
+
+const offensivePotion = computed(() => store.getters.offensivePotion);
+const defensivePotion = computed(() => store.getters.defensivePotion);
 </script>
 
 <style scoped>
@@ -166,18 +179,25 @@ const character = computed(() => store.getters.character);
 
 .potions-section {
   margin-top: 10px; /* Réduit de 25px à 10px */
+  background-color: var(--color-secondary);
+  border-radius: 5px;
+  padding: 10px;
 }
 
 .potion-group {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   display: flex;
-  align-items: center;
-  gap: 0.5rem; /* Réduit de 1rem à 0.5rem */
+  flex-direction: column;
+}
+
+.potion-group span {
+  font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .potion-points {
   display: flex;
-  gap: 5px;
+  justify-content: space-between;
 }
 
 ul {
@@ -198,5 +218,12 @@ li p {
 
 .hp-gauge .gauge-points, .gold-gauge .gauge-points {
   gap: 3px;
+}
+
+.potions {
+  margin-top: 10px;
+}
+.offensive-potion, .defensive-potion {
+  margin: 5px 0;
 }
 </style>
