@@ -16,6 +16,7 @@ export default createStore({
     currentChamber: 1,
     potionOffer: null,
     currentFloor: 1,
+    currentRoom: 1,
   },
   mutations: {
     UPDATE_STAT(state, { stat, value }) {
@@ -49,6 +50,12 @@ export default createStore({
     INCREMENT_FLOOR(state) {
       state.currentFloor++;
       state.currentChamber = 1;
+    },
+    SET_CURRENT_FLOOR(state, floor) {
+      state.currentFloor = floor;
+    },
+    SET_CURRENT_ROOM(state, room) {
+      state.currentRoom = room;
     },
   },
   actions: {

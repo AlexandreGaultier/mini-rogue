@@ -6,7 +6,7 @@
           <h3>{{ tileContent(i).name }}</h3>
           <p>{{ tileContent(i).description }}</p>
           <template v-if="isAvailableTile(i) || currentTile === i">
-            <template v-if="tileContent(i).type === 'reward'">
+            <template v-if="['reward', 'beneficial'].includes(tileContent(i).type)">
               <p class="immediate-reward">{{ tileContent(i).immediateReward?.text || 'Pas de récompense immédiate' }}</p>
               <ul class="roll-rewards" v-if="tileContent(i).rollRewards">
                 <li v-for="(reward, roll) in tileContent(i).rollRewards" :key="roll">
@@ -33,7 +33,7 @@
               />
               <button v-else-if="currentTile === i && !rewardsCollected[i]" @click.stop="startCombat(i)">Combattre</button>
             </template>
-            <template v-else-if="['empty', 'beneficial', 'trap', 'merchant'].includes(tileContent(i).type)">
+            <template v-else-if="['empty', 'trap', 'merchant'].includes(tileContent(i).type)">
               <button @click="interactWithTile(i)" :disabled="rewardsCollected[i]">
                 {{ rewardsCollected[i] ? 'Continuer' : 'Interagir' }}
               </button>
@@ -45,9 +45,10 @@
         </template>
       </div>
     </div>
-    <button v-if="currentTile === 9 && rewardsCollected[9]" @click="goToNextFloor">
-      Étage suivant 🪜
+    <button v-if="lastTileCompleted" @click="goToNextRoom" class="continue-button">
+      Continuer
     </button>
+    <p>Tuile actuelle : {{ currentTile }} / 9</p>
     <div v-if="newPotionNotification" class="potion-notification">
       {{ newPotionNotification }}
     </div>
@@ -87,15 +88,20 @@ const currentMonster = ref(null);
 
 const emit = defineEmits(['chamber-completed']);
 
+const currentFloor = computed(() => store.state.currentFloor);
+const currentRoom = computed(() => store.state.currentRoom);
+const dungeon = computed(() => store.state.dungeon);
+
+const lastTileCompleted = computed(() => rewardsCollected[9] === true);
+
 onMounted(() => {
   initializeTiles();
   selectTile(1);
 });
 
 function initializeTiles() {
-  const currentFloor = store.state.currentFloor;
-  const maxFloors = store.state.dungeon.floors.length;
-  const difficulty = currentFloor / maxFloors;
+  const currentFloorIndex = dungeon.value.floors.findIndex(floor => floor.level === currentFloor.value);
+  const difficulty = (currentFloorIndex + 1) / dungeon.value.floors.length;
 
   tiles.value = Array(9).fill().map(() => {
     const tileType = getRandomTileType(difficulty);
@@ -163,6 +169,10 @@ function collectReward(tileNumber) {
   }
 
   rewardsCollected[tileNumber] = true;
+  console.log('Récompense collectée pour la tuile:', tileNumber);
+  if (tileNumber === 9) {
+    console.log('Dernière tuile complétée !');
+  }
 }
 
 function completeChamber() {
@@ -190,6 +200,10 @@ function rejectNewPotion() {
 function onCombatEnded(playerWon) {
   if (playerWon) {
     rewardsCollected[currentTile.value] = true;
+    console.log('Combat gagné pour la tuile:', currentTile.value);
+    if (currentTile.value === 9) {
+      console.log('Dernière tuile complétée !');
+    }
   }
   currentMonster.value = null;
 }
@@ -198,8 +212,28 @@ function startCombat(tileNumber) {
   currentTile.value = tileNumber;
 }
 
-function goToNextFloor() {
-  store.dispatch('nextFloor');
+function goToNextRoom() {
+  console.log('Passage à la salle suivante');
+  const currentFloorData = dungeon.value.floors.find(floor => floor.level === currentFloor.value);
+  
+  if (currentRoom.value < currentFloorData.rooms.length) {
+    // Passer à la salle suivante du même étage
+    store.commit('SET_CURRENT_ROOM', currentRoom.value + 1);
+  } else {
+    // Passer à l'étage suivant
+    const nextFloorIndex = dungeon.value.floors.findIndex(floor => floor.level === currentFloor.value) + 1;
+    if (nextFloorIndex < dungeon.value.floors.length) {
+      store.commit('SET_CURRENT_FLOOR', dungeon.value.floors[nextFloorIndex].level);
+      store.commit('SET_CURRENT_ROOM', 1);
+    } else {
+      // Le donjon est terminé
+      alert("Félicitations ! Vous avez terminé le donjon !");
+      // Ici, vous pouvez ajouter la logique pour retourner au menu principal ou commencer un nouveau donjon
+      return;
+    }
+  }
+  
+  // Réinitialiser la salle
   initializeTiles();
 }
 
@@ -212,6 +246,10 @@ function interactWithTile(tileNumber) {
     // Logique pour le marchand
   }
   rewardsCollected[tileNumber] = true;
+  console.log('Interaction avec la tuile:', tileNumber);
+  if (tileNumber === 9) {
+    console.log('Dernière tuile complétée !');
+  }
 }
 
 function getRandomTileType(difficulty) {
@@ -261,11 +299,18 @@ function getDefaultTile(type) {
     type: type,
     name: `Salle ${type}`,
     description: `Une salle ${type} ordinaire.`,
-    effect: {}
+    immediateReward: { text: "Pas de récompense immédiate" },
+    rollRewards: {
+      1: { text: "Rien ne se passe" },
+      2: { text: "Rien ne se passe" },
+      3: { text: "Rien ne se passe" },
+      4: { text: "Rien ne se passe" },
+      5: { text: "Rien ne se passe" },
+      6: { text: "Rien ne se passe" }
+    }
   };
 }
 
-const dungeon = computed(() => store.state.dungeon);
 const currentLevel = computed(() => store.state.currentLevel);
 const currentChamber = computed(() => store.state.currentChamber);
 </script>
@@ -393,4 +438,16 @@ button:disabled {
   padding: 5px 10px;
   cursor: pointer;
 }
+
+.continue-button {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: var(--color-accent);
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
 </style>
+
