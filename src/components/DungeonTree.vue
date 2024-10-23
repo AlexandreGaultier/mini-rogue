@@ -1,13 +1,13 @@
 <template>
   <div v-if="dungeon && dungeon.floors" class="dungeon-tree">
     <h3>{{ dungeon.name }}</h3>
-    <div class="current-location">Niveau {{ currentLevel }} - Salle {{ currentChamber }}</div>
+    <div class="current-location">Niveau {{ currentFloor }} - Salle {{ currentChamber }}</div>
     <div class="floors">
       <div v-for="floor in dungeon.floors" :key="floor.level" class="floor">
         <div class="level">Niveau {{ floor.level }}</div>
         <div class="rooms">
           <div v-for="room in floor.rooms" :key="room.number" 
-               :class="['room', room.type, { 'current': floor.level === currentLevel && room.number === currentChamber }]">
+               :class="['room', room.type, { 'current': floor.level === currentFloor && room.number === currentChamber }]">
             {{ room.number }}
             <span v-if="room.type === 'boss'" class="boss-icon">👑</span>
           </div>
@@ -18,22 +18,14 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { computed } from 'vue';
+import { useStore } from 'vuex';
 
-const props = defineProps({
-  dungeon: {
-    type: Object,
-    required: true
-  },
-  currentLevel: {
-    type: Number,
-    required: true
-  },
-  currentChamber: {
-    type: Number,
-    required: true
-  }
-});
+const store = useStore();
+
+const dungeon = computed(() => store.state.dungeon);
+const currentFloor = computed(() => store.state.currentFloor);
+const currentChamber = computed(() => store.state.currentChamber);
 </script>
 
 <style scoped>

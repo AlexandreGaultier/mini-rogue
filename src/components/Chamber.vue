@@ -20,7 +20,7 @@
                     <br>
                     Récompense : {{ tileContent(i).rollRewards[diceResults[i]].text }}
                   </p>
-                  <button v-if="!rewardsCollected[i] && diceResults[i]" @click.stop="collectReward(i)">Récupérer</button>
+                  <button v-if="!rewardsCollected[i]" @click.stop="collectReward(i)">Récupérer</button>
                 </template>
               </div>
             </template>
@@ -39,7 +39,9 @@
         </template>
       </div>
     </div>
-    <button v-if="currentTile === 9 && rewardsCollected[9]" @click="completeChamber">Continuer</button>
+    <button v-if="currentTile === 9 && rewardsCollected[9]" @click="goToNextFloor">
+      Étage suivant 🪜
+    </button>
     <div v-if="newPotionNotification" class="potion-notification">
       {{ newPotionNotification }}
     </div>
@@ -95,10 +97,15 @@ function initializeTiles() {
       return { ...reward, type: 'reward' };
     }
   });
+  revealedTiles.value = [1];
+  currentTile.value = 1;
+  Object.keys(diceResults).forEach(key => delete diceResults[key]);
+  Object.keys(diceRolling).forEach(key => delete diceRolling[key]);
+  Object.keys(rewardsCollected).forEach(key => delete rewardsCollected[key]);
 }
 
 function selectTile(tileNumber) {
-  if (isAvailableTile(tileNumber) && rewardsCollected[currentTile.value]) {
+  if (isAvailableTile(tileNumber)) {
     if (!revealedTiles.value.includes(tileNumber)) {
       revealedTiles.value.push(tileNumber);
     }
@@ -138,12 +145,9 @@ function rollDice(tileNumber) {
 }
 
 function collectReward(tileNumber) {
-  if (rewardsCollected[tileNumber]) return;
-
   const tile = tileContent(tileNumber);
   const rollReward = tile.rollRewards[diceResults[tileNumber]];
   const immediateReward = tile.immediateReward;
-
 
   if (immediateReward) {
     store.dispatch('applyReward', immediateReward);
@@ -157,23 +161,12 @@ function collectReward(tileNumber) {
 }
 
 function completeChamber() {
-  if (dungeon.value && dungeon.value.floors) {
-    const currentFloor = dungeon.value.floors.find(floor => floor.level === currentLevel.value);
-    if (currentFloor) {
-      if (currentChamber.value < currentFloor.rooms.length) {
-        store.commit('SET_CURRENT_CHAMBER', currentChamber.value + 1);
-      } else {
-        // Passer au niveau suivant
-        if (currentLevel.value < dungeon.value.floors.length) {
-          store.commit('SET_CURRENT_LEVEL', currentLevel.value + 1);
-          store.commit('SET_CURRENT_CHAMBER', 1);
-        } else {
-          // Le donjon est terminé
-          alert("Félicitations ! Vous avez terminé le donjon !");
-          // Ici, vous pouvez rediriger vers une page de victoire ou le menu principal
-        }
-      }
-    }
+  const result = store.dispatch('nextChamber');
+  if (result === 'finished') {
+    alert("Félicitations ! Vous avez terminé le donjon !");
+    // Rediriger vers une page de victoire ou le menu principal
+  } else {
+    initializeTiles();
   }
 }
 
@@ -212,6 +205,11 @@ function onCombatEnded(playerWon) {
 
 function startCombat(tileNumber) {
   currentTile.value = tileNumber;
+}
+
+function goToNextFloor() {
+  store.dispatch('nextFloor');
+  initializeTiles();
 }
 
 const dungeon = computed(() => store.state.dungeon);
@@ -343,3 +341,4 @@ button:disabled {
   cursor: pointer;
 }
 </style>
+

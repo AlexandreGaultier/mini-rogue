@@ -14,7 +14,8 @@ export default createStore({
     dungeon: null,
     currentLevel: 1,
     currentChamber: 1,
-    potionOffer: null
+    potionOffer: null,
+    currentFloor: 1,
   },
   mutations: {
     UPDATE_STAT(state, { stat, value }) {
@@ -39,7 +40,16 @@ export default createStore({
     },
     SET_DUNGEON(state, dungeon) {
       state.dungeon = dungeon;
-    }
+    },
+    REGENERATE_TILES(state) {
+      // Cette fonction sera appelée pour régénérer les tuiles
+      // Vous pouvez implémenter la logique de génération ici si vous le souhaitez
+      // ou laisser le composant Chamber s'en charger
+    },
+    INCREMENT_FLOOR(state) {
+      state.currentFloor++;
+      state.currentChamber = 1;
+    },
   },
   actions: {
     applyReward({ commit, dispatch }, reward) {
@@ -76,7 +86,24 @@ export default createStore({
     },
     rejectPotionOffer({ commit }) {
       commit('SET_POTION_OFFER', null);
-    }
+    },
+    nextChamber({ commit, state, getters }) {
+      const currentFloor = getters.currentFloor;
+      if (state.currentChamber < currentFloor.rooms.length) {
+        commit('SET_CURRENT_CHAMBER', state.currentChamber + 1);
+      } else if (state.currentLevel < state.dungeon.floors.length) {
+        commit('SET_CURRENT_LEVEL', state.currentLevel + 1);
+        commit('SET_CURRENT_CHAMBER', 1);
+      } else {
+        // Le donjon est terminé
+        return 'finished';
+      }
+      commit('REGENERATE_TILES');
+      return 'next';
+    },
+    nextFloor({ commit }) {
+      commit('INCREMENT_FLOOR');
+    },
   },
   getters: {
     character: state => state.character,
@@ -84,7 +111,10 @@ export default createStore({
     currentChamber: state => state.currentChamber,
     offensivePotion: state => state.character.offensivePotion,
     defensivePotion: state => state.character.defensivePotion,
-    potionOffer: state => state.potionOffer
+    potionOffer: state => state.potionOffer,
+    currentFloor: (state) => {
+      return state.dungeon.floors.find(floor => floor.level === state.currentLevel);
+    }
   }
 });
 
