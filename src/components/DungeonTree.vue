@@ -1,5 +1,5 @@
 <template>
-  <div class="dungeon-tree">
+  <div v-if="dungeon && dungeon.floors" class="dungeon-tree">
     <h3>{{ dungeon.name }}</h3>
     <div class="current-location">Niveau {{ currentLevel }} - Salle {{ currentChamber }}</div>
     <div class="floors">

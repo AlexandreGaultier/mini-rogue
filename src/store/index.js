@@ -11,7 +11,7 @@ const potions = {
 export default createStore({
   state: {
     character: { ...initialCharacterState },
-    dungeon: gameData.dungeon,
+    dungeon: null,
     currentLevel: 1,
     currentChamber: 1,
     potionOffer: null
@@ -36,6 +36,9 @@ export default createStore({
     },
     SET_POTION_OFFER(state, offer) {
       state.potionOffer = offer;
+    },
+    SET_DUNGEON(state, dungeon) {
+      state.dungeon = dungeon;
     }
   },
   actions: {

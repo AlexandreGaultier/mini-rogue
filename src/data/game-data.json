@@ -292,39 +292,121 @@
       "reward": { "type": "xp", "value": 3 }
     }
   ],
-  "dungeon": {
-    "name": "La Citadelle des Ombres",
-    "floors": [
-      {
-        "level": 1,
-        "rooms": [
-          { "number": 1, "type": "normal" },
-          { "number": 2, "type": "boss" }
-        ]
-      },
-      {
-        "level": 2,
-        "rooms": [
-          { "number": 1, "type": "normal" },
-          { "number": 2, "type": "boss" }
-        ]
-      },
-      {
-        "level": 3,
-        "rooms": [
-          { "number": 1, "type": "normal" },
-          { "number": 2, "type": "normal" },
-          { "number": 3, "type": "boss" }
-        ]
-      },
-      {
-        "level": 4,
-        "rooms": [
-          { "number": 1, "type": "normal" },
-          { "number": 2, "type": "normal" },
-          { "number": 3, "type": "boss" }
-        ]
-      }
-    ]
-  }
+  "dungeons": [
+    {
+      "id": 1,
+      "name": "La Citadelle des Ombres",
+      "difficulty": "Facile",
+      "floors": [
+        {
+          "level": 1,
+          "rooms": [
+            { "number": 1, "type": "normal" },
+            { "number": 2, "type": "boss" }
+          ]
+        },
+        {
+          "level": 2,
+          "rooms": [
+            { "number": 1, "type": "normal" },
+            { "number": 2, "type": "boss" }
+          ]
+        },
+        {
+          "level": 3,
+          "rooms": [
+            { "number": 1, "type": "normal" },
+            { "number": 2, "type": "normal" },
+            { "number": 3, "type": "boss" }
+          ]
+        },
+        {
+          "level": 4,
+          "rooms": [
+            { "number": 1, "type": "normal" },
+            { "number": 2, "type": "normal" },
+            { "number": 3, "type": "boss" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Les Catacombes Maudites",
+      "difficulty": "Moyen",
+      "floors": [
+        {
+          "level": 1,
+          "rooms": [
+            { "number": 1, "type": "normal" },
+            { "number": 2, "type": "normal" },
+            { "number": 3, "type": "boss" }
+          ]
+        },
+        {
+          "level": 2,
+          "rooms": [
+            { "number": 1, "type": "normal" },
+            { "number": 2, "type": "normal" },
+            { "number": 3, "type": "normal" },
+            { "number": 4, "type": "boss" }
+          ]
+        },
+        {
+          "level": 3,
+          "rooms": [
+            { "number": 1, "type": "normal" },
+            { "number": 2, "type": "normal" },
+            { "number": 3, "type": "normal" },
+            { "number": 4, "type": "normal" },
+            { "number": 5, "type": "boss" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "La Tour du Nécromancien",
+      "difficulty": "Difficile",
+      "floors": [
+        {
+          "level": 1,
+          "rooms": [
+            { "number": 1, "type": "normal" },
+            { "number": 2, "type": "normal" },
+            { "number": 3, "type": "normal" },
+            { "number": 4, "type": "boss" }
+          ]
+        },
+        {
+          "level": 2,
+          "rooms": [
+            { "number": 1, "type": "normal" },
+            { "number": 2, "type": "normal" },
+            { "number": 3, "type": "normal" },
+            { "number": 4, "type": "normal" },
+            { "number": 5, "type": "boss" }
+          ]
+        },
+        {
+          "level": 3,
+          "rooms": [
+            { "number": 1, "type": "normal" },
+            { "number": 2, "type": "normal" },
+            { "number": 3, "type": "normal" },
+            { "number": 4, "type": "normal" },
+            { "number": 5, "type": "normal" },
+            { "number": 6, "type": "boss" }
+          ]
+        }
+      ]
+    }
+  ],
+  "gameOverDialogues": [
+    "Votre corps gît désormais dans les profondeurs obscures, oublié de tous...",
+    "Les ténèbres vous engloutissent, votre quête s'achève ici dans un silence glacial.",
+    "Votre dernier souffle résonne dans les couloirs vides, emportant avec lui vos rêves de gloire.",
+    "Les murs froids du donjon seront votre tombeau éternel, témoin de votre échec.",
+    "Vous succombez à vos blessures, laissant derrière vous une légende inachevée."
+  ]
 }

@@ -2,7 +2,11 @@
   <div class="game-view">
     <div class="game-board">
       <div class="left-panel">
-        <DungeonTree :dungeon="gameData.dungeon" :currentLevel="currentLevel" :currentChamber="currentChamber" />
+        <DungeonTree 
+          :dungeon="dungeon" 
+          :currentLevel="currentLevel" 
+          :currentChamber="currentChamber"
+        />
         <MonsterHealthBar 
           :monsterName="currentMonster.name"
           :currentHealth="currentMonster.currentHealth"
@@ -19,12 +23,16 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useStore } from 'vuex';
 import Chamber from '../components/Chamber.vue';
 import CharacterBoard from '../components/CharacterBoard.vue';
 import DungeonTree from '../components/DungeonTree.vue';
 import gameData from '../data/game-data.json';
 import MonsterHealthBar from '../components/MonsterHealthBar.vue';
 
+const store = useStore();
+
+const dungeon = computed(() => store.state.dungeon);
 const currentLevel = ref(1);
 const currentChamber = ref(1);
 const currentCharacter = ref(gameData.characters[0]); // Sélectionne le premier personnage par défaut

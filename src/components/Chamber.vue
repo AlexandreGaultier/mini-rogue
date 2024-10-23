@@ -157,13 +157,24 @@ function collectReward(tileNumber) {
 }
 
 function completeChamber() {
-  emit('chamber-completed');
-  store.dispatch('nextChamber');
-  initializeTiles();
-  revealedTiles.value = [1];
-  currentTile.value = 1;
-  Object.keys(diceResults).forEach(key => delete diceResults[key]);
-  Object.keys(rewardsCollected).forEach(key => delete rewardsCollected[key]);
+  if (dungeon.value && dungeon.value.floors) {
+    const currentFloor = dungeon.value.floors.find(floor => floor.level === currentLevel.value);
+    if (currentFloor) {
+      if (currentChamber.value < currentFloor.rooms.length) {
+        store.commit('SET_CURRENT_CHAMBER', currentChamber.value + 1);
+      } else {
+        // Passer au niveau suivant
+        if (currentLevel.value < dungeon.value.floors.length) {
+          store.commit('SET_CURRENT_LEVEL', currentLevel.value + 1);
+          store.commit('SET_CURRENT_CHAMBER', 1);
+        } else {
+          // Le donjon est terminé
+          alert("Félicitations ! Vous avez terminé le donjon !");
+          // Ici, vous pouvez rediriger vers une page de victoire ou le menu principal
+        }
+      }
+    }
+  }
 }
 
 watch(() => store.getters.offensivePotion, (newValue, oldValue) => {
@@ -202,6 +213,10 @@ function onCombatEnded(playerWon) {
 function startCombat(tileNumber) {
   currentTile.value = tileNumber;
 }
+
+const dungeon = computed(() => store.state.dungeon);
+const currentLevel = computed(() => store.state.currentLevel);
+const currentChamber = computed(() => store.state.currentChamber);
 </script>
 
 <style scoped>
