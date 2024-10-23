@@ -5,23 +5,33 @@
         <template v-if="(tileRevealed(i) || isAvailableTile(i)) && tileContent(i)">
           <h3>{{ tileContent(i).name }}</h3>
           <template v-if="isAvailableTile(i) || currentTile === i">
-            <p class="immediate-reward">{{ tileContent(i).immediateReward.text }}</p>
-            <ul class="roll-rewards">
-              <li v-for="(reward, roll) in tileContent(i).rollRewards" :key="roll">
-                {{ roll }}: {{ reward.text }}
-              </li>
-            </ul>
-            <div v-if="currentTile === i" class="tile-details">
-              <button v-if="!diceResults[i]" @click.stop="rollDice(i)" :disabled="diceRolling[i]">Lancer le dé</button>
-              <template v-else>
-                <p class="dice-result">
-                  Résultat : {{ diceResults[i] }}
-                  <br>
-                  Récompense : {{ tileContent(i).rollRewards[diceResults[i]].text }}
-                </p>
-                <button v-if="!rewardsCollected[i] && diceResults[i]" @click.stop="collectReward(i)">Récupérer</button>
-              </template>
-            </div>
+            <template v-if="tileContent(i).type === 'reward'">
+              <p class="immediate-reward">{{ tileContent(i).immediateReward?.text || 'Pas de récompense immédiate' }}</p>
+              <ul class="roll-rewards" v-if="tileContent(i).rollRewards">
+                <li v-for="(reward, roll) in tileContent(i).rollRewards" :key="roll">
+                  {{ roll }}: {{ reward.text }}
+                </li>
+              </ul>
+              <div v-if="currentTile === i" class="tile-details">
+                <button v-if="!diceResults[i]" @click.stop="rollDice(i)" :disabled="diceRolling[i]">Lancer le dé</button>
+                <template v-else>
+                  <p class="dice-result">
+                    Résultat : {{ diceResults[i] }}
+                    <br>
+                    Récompense : {{ tileContent(i).rollRewards[diceResults[i]].text }}
+                  </p>
+                  <button v-if="!rewardsCollected[i] && diceResults[i]" @click.stop="collectReward(i)">Récupérer</button>
+                </template>
+              </div>
+            </template>
+            <template v-else-if="tileContent(i).type === 'monster'">
+              <MonsterFight 
+                v-if="currentTile === i && !rewardsCollected[i]"
+                :monster="tileContent(i)"
+                @combat-ended="onCombatEnded"
+              />
+              <button v-else-if="currentTile === i && !rewardsCollected[i]" @click.stop="startCombat(i)">Combattre</button>
+            </template>
           </template>
         </template>
         <template v-else>
@@ -43,9 +53,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, watch, onUnmounted } from 'vue';
+import { ref, reactive, computed, onMounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import gameData from '../data/game-data.json';
+import MonsterFight from './MonsterFight.vue';
 
 const props = defineProps({
   chamberNumber: {
@@ -64,6 +75,7 @@ const rewardsCollected = reactive({});
 const currentTile = ref(1);
 const tiles = ref([]);
 const newPotionNotification = ref('');
+const currentMonster = ref(null);
 
 const emit = defineEmits(['chamber-completed']);
 
@@ -74,7 +86,14 @@ onMounted(() => {
 
 function initializeTiles() {
   tiles.value = Array(9).fill().map(() => {
-    return gameData.tiles[Math.floor(Math.random() * gameData.tiles.length)];
+    const tileType = Math.random() < 0.3 ? 'monster' : 'reward';
+    if (tileType === 'monster') {
+      const monster = gameData.monsters[Math.floor(Math.random() * gameData.monsters.length)];
+      return { ...monster, type: 'monster' };
+    } else {
+      const reward = gameData.tiles[Math.floor(Math.random() * gameData.tiles.length)];
+      return { ...reward, type: 'reward' };
+    }
   });
 }
 
@@ -84,6 +103,13 @@ function selectTile(tileNumber) {
       revealedTiles.value.push(tileNumber);
     }
     currentTile.value = tileNumber;
+    
+    const selectedTile = tileContent(tileNumber);
+    if (selectedTile.type === 'monster') {
+      currentMonster.value = selectedTile;
+    } else {
+      currentMonster.value = null;
+    }
   }
 }
 
@@ -166,6 +192,16 @@ function rejectNewPotion() {
   store.dispatch('rejectPotionOffer');
 }
 
+function onCombatEnded(playerWon) {
+  if (playerWon) {
+    rewardsCollected[currentTile.value] = true;
+  }
+  currentMonster.value = null;
+}
+
+function startCombat(tileNumber) {
+  currentTile.value = tileNumber;
+}
 </script>
 
 <style scoped>

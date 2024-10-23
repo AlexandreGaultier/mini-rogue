@@ -128,145 +128,6 @@
       ]
     }
   ],
-  "monsters": {
-    "1": {
-      "name": "Rat géant",
-      "hp": 6,
-      "damage": 1,
-      "reward": { "exp": 1, "gold": 1 }
-    },
-    "2": {
-      "name": "Soldat squelette",
-      "hp": 9,
-      "damage": 2,
-      "reward": { "exp": 2, "gold": 2 }
-    },
-    "3": {
-      "name": "Gobelin",
-      "hp": 12,
-      "damage": 3,
-      "reward": { "exp": 3, "gold": 3 }
-    },
-    "4": {
-      "name": "Ogre",
-      "hp": 15,
-      "damage": 4,
-      "reward": { "exp": 4, "gold": 4 }
-    },
-    "5": {
-      "name": "Dragon",
-      "hp": 20,
-      "damage": 5,
-      "reward": { "exp": 5, "gold": 5 }
-    }
-  },
-  "rooms": {
-    "treasure": [
-      { "result": [1, 2], "effect": { "gold": 2 } },
-      { "result": [3, 4], "effect": { "exp": 1 } },
-      { "result": [5, 6], "effect": { "combat": true, "reward": { "gold": 3 } } }
-    ],
-    "library": [
-      { "result": [1, 2], "effect": { "exp": 2 } },
-      { "result": [3, 4], "effect": { "skill": "random" } },
-      { "result": [5, 6], "effect": { "combat": true, "monster": "bookworm" } }
-    ],
-    "altar": [
-      { "result": [1], "effect": { "hp": -2, "exp": 3 } },
-      { "result": [2], "effect": { "gold": -3, "armor": 1 } },
-      { "result": [3], "effect": { "potion": ["bénédiction"] } },
-      { "result": [4], "effect": { "curse": "random" } },
-      { "result": [5], "effect": { "hp": 5 } },
-      { "result": [6], "effect": { "combat": true, "monster": "guardian" } }
-    ],
-    "armory": [
-      { "result": [1, 2], "effect": { "weapon": "random" } },
-      { "result": [3, 4], "effect": { "shield": "random" } },
-      { "result": [5, 6], "effect": { "combat": true, "reward": { "armor": 2 } } }
-    ],
-    "fountain": [
-      { "result": [1], "effect": { "hp": "full" } },
-      { "result": [2], "effect": { "potion": ["soin"] } },
-      { "result": [3], "effect": { "gold": -2, "exp": 2 } },
-      { "result": [4], "effect": { "curse": "poison" } },
-      { "result": [5], "effect": { "blessing": "strength" } },
-      { "result": [6], "effect": { "combat": true, "monster": "water_elemental" } }
-    ],
-    "trap": [
-      { "result": [1, 2], "effect": { "hp": -3 } },
-      { "result": [3, 4], "effect": { "gold": -2 } },
-      { "result": [5, 6], "effect": { "combat": true, "surprise": true } }
-    ],
-    "shop": [
-      { "result": [1], "effect": { "shop": "weapon" } },
-      { "result": [2], "effect": { "shop": "shield" } },
-      { "result": [3], "effect": { "shop": "potion" } },
-      { "result": [4], "effect": { "shop": "familiar" } },
-      { "result": [5], "effect": { "trade": { "gold": -5, "exp": 3 } } },
-      { "result": [6], "effect": { "combat": true, "monster": "thief" } }
-    ],
-    "crypt": [
-      { "result": [1], "effect": { "gold": 5 } },
-      { "result": [2], "effect": { "curse": "weakness" } },
-      { "result": [3], "effect": { "item": "random" } },
-      { "result": [4], "effect": { "exp": 3 } },
-      { "result": [5], "effect": { "combat": true, "monster": "skeleton" } },
-      { "result": [6], "effect": { "combat": true, "monster": "lich" } }
-    ]
-  },
-  "items": {
-    "weapons": [
-      { "id": 1, "name": "Épée courte", "damage": 1 },
-      { "id": 2, "name": "Hache de bataille", "damage": 2 }
-    ],
-    "shields": [
-      { "id": 1, "name": "Bouclier en bois", "armor": 1 },
-      { "id": 2, "name": "Bouclier en acier", "armor": 2 }
-    ],
-    "familiars": [
-      {
-        "id": 1,
-        "name": "Rat apprivoisé",
-        "effect": "Augmente les chances de trouver de l'or",
-        "bonus": {
-          "type": "goldFind",
-          "value": 1.2
-        }
-      },
-      {
-        "id": 2,
-        "name": "Fée guérisseuse",
-        "effect": "Soigne 1 PV à chaque combat",
-        "bonus": {
-          "type": "healing",
-          "value": 1
-        }
-      },
-      {
-        "id": 3,
-        "name": "Lutin chanceux",
-        "effect": "Augmente les chances de coup critique",
-        "bonus": {
-          "type": "criticalHit",
-          "value": 0.1
-        }
-      }
-    ]
-  },
-  "shop": {
-    "weapons": [
-      { "id": "w1", "name": "Épée longue", "damage": 2, "price": 50 },
-      { "id": "w2", "name": "Hache de guerre", "damage": 3, "price": 75 }
-    ],
-    "shields": [
-      { "id": "s1", "name": "Bouclier en fer", "armor": 2, "price": 40 },
-      { "id": "s2", "name": "Bouclier en acier", "armor": 3, "price": 60 }
-    ],
-    "potions": [
-      { "id": "p1", "name": "Potion de soin", "effect": "heal", "value": 5, "price": 20 },
-      { "id": "p2", "name": "Potion de force", "effect": "strength", "value": 2, "price": 30 }
-    ]
-  },
   "tiles": [
     {
       "name": "Trésor",
@@ -399,6 +260,36 @@
           "effect": { "defensivePotion": "random" }
         }
       }
+    }
+  ],
+  "monsters": [
+    {
+      "type": "monster",
+      "name": "Rat géant",
+      "health": 6,
+      "damage": 2,
+      "reward": { "type": "xp", "value": 1 }
+    },
+    {
+      "type": "monster",
+      "name": "Soldat squelette",
+      "health": 9,
+      "damage": 4,
+      "reward": { "type": "xp", "value": 2 }
+    },
+    {
+      "type": "monster",
+      "name": "Serpent ailé",
+      "health": 12,
+      "damage": 6,
+      "reward": { "type": "xp", "value": 2 }
+    },
+    {
+      "type": "monster",
+      "name": "Garde maudit",
+      "health": 15,
+      "damage": 8,
+      "reward": { "type": "xp", "value": 3 }
     }
   ],
   "dungeon": {
