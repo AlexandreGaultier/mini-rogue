@@ -131,6 +131,8 @@
   "tiles": [
     {
       "name": "Trésor",
+      "type": "reward",
+      "difficulty": 1,
       "immediateReward": {
         "text": "+1 pièce d'or",
         "effect": { "gold": 1 }
@@ -164,6 +166,8 @@
     },
     {
       "name": "Bibliothèque",
+      "type": "beneficial",
+      "difficulty": 2,
       "immediateReward": {
         "text": "Gagnez 1 point d'expérience",
         "effect": { "exp": 1 }
@@ -260,36 +264,91 @@
           "effect": { "defensivePotion": "random" }
         }
       }
+    },
+    {
+      "name": "Salle vide",
+      "type": "empty",
+      "description": "Une salle vide et silencieuse."
+    },
+    {
+      "name": "Fontaine de vie",
+      "type": "beneficial",
+      "description": "Une fontaine magique qui restaure vos forces.",
+      "effect": { "hp": 5 }
+    },
+    {
+      "name": "Piège à pointes",
+      "type": "trap",
+      "difficulty": 3,
+      "description": "Un piège sournois caché dans le sol.",
+      "effect": { "hp": -3 }
+    },
+    {
+      "name": "Marchand ambulant",
+      "type": "merchant",
+      "description": "Un marchand propose ses services.",
+      "options": [
+        { "text": "Acheter une potion de soin (2 or)", "cost": { "gold": 2 }, "effect": { "hp": 10 } },
+        { "text": "Acheter une armure légère (3 or)", "cost": { "gold": 3 }, "effect": { "armor": 1 } }
+      ]
     }
   ],
   "monsters": [
     {
       "type": "monster",
+      "name": "Gobelin faible",
+      "health": 4,
+      "damage": 1,
+      "reward": { "type": "xp", "value": 1 },
+      "difficulty": 1
+    },
+    {
+      "type": "monster",
       "name": "Rat géant",
       "health": 6,
       "damage": 2,
-      "reward": { "type": "xp", "value": 1 }
+      "reward": { "type": "xp", "value": 1 },
+      "difficulty": 2
+    },
+    {
+      "type": "monster",
+      "name": "Kobold",
+      "health": 8,
+      "damage": 3,
+      "reward": { "type": "xp", "value": 2 },
+      "difficulty": 3
     },
     {
       "type": "monster",
       "name": "Soldat squelette",
-      "health": 9,
+      "health": 10,
       "damage": 4,
-      "reward": { "type": "xp", "value": 2 }
+      "reward": { "type": "xp", "value": 2 },
+      "difficulty": 4
     },
     {
       "type": "monster",
       "name": "Serpent ailé",
       "health": 12,
       "damage": 6,
-      "reward": { "type": "xp", "value": 2 }
+      "reward": { "type": "xp", "value": 3 },
+      "difficulty": 5
     },
     {
       "type": "monster",
       "name": "Garde maudit",
       "health": 15,
       "damage": 8,
-      "reward": { "type": "xp", "value": 3 }
+      "reward": { "type": "xp", "value": 3 },
+      "difficulty": 6
+    },
+    {
+      "type": "monster",
+      "name": "Minotaure",
+      "health": 20,
+      "damage": 10,
+      "reward": { "type": "xp", "value": 4 },
+      "difficulty": 7
     }
   ],
   "dungeons": [

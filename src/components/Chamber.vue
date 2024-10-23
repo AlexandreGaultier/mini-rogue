@@ -4,6 +4,7 @@
       <div v-for="i in 9" :key="i" class="tile" :class="{ 'current': currentTile === i, 'available': isAvailableTile(i) }" @click="selectTile(i)">
         <template v-if="(tileRevealed(i) || isAvailableTile(i)) && tileContent(i)">
           <h3>{{ tileContent(i).name }}</h3>
+          <p>{{ tileContent(i).description }}</p>
           <template v-if="isAvailableTile(i) || currentTile === i">
             <template v-if="tileContent(i).type === 'reward'">
               <p class="immediate-reward">{{ tileContent(i).immediateReward?.text || 'Pas de récompense immédiate' }}</p>
@@ -31,6 +32,11 @@
                 @combat-ended="onCombatEnded"
               />
               <button v-else-if="currentTile === i && !rewardsCollected[i]" @click.stop="startCombat(i)">Combattre</button>
+            </template>
+            <template v-else-if="['empty', 'beneficial', 'trap', 'merchant'].includes(tileContent(i).type)">
+              <button @click="interactWithTile(i)" :disabled="rewardsCollected[i]">
+                {{ rewardsCollected[i] ? 'Continuer' : 'Interagir' }}
+              </button>
             </template>
           </template>
         </template>
@@ -87,16 +93,15 @@ onMounted(() => {
 });
 
 function initializeTiles() {
+  const currentFloor = store.state.currentFloor;
+  const maxFloors = store.state.dungeon.floors.length;
+  const difficulty = currentFloor / maxFloors;
+
   tiles.value = Array(9).fill().map(() => {
-    const tileType = Math.random() < 0.3 ? 'monster' : 'reward';
-    if (tileType === 'monster') {
-      const monster = gameData.monsters[Math.floor(Math.random() * gameData.monsters.length)];
-      return { ...monster, type: 'monster' };
-    } else {
-      const reward = gameData.tiles[Math.floor(Math.random() * gameData.tiles.length)];
-      return { ...reward, type: 'reward' };
-    }
+    const tileType = getRandomTileType(difficulty);
+    return getTileContent(tileType, difficulty);
   });
+
   revealedTiles.value = [1];
   currentTile.value = 1;
   Object.keys(diceResults).forEach(key => delete diceResults[key]);
@@ -170,20 +175,6 @@ function completeChamber() {
   }
 }
 
-watch(() => store.getters.offensivePotion, (newValue, oldValue) => {
-  if (newValue !== oldValue) {
-    newPotionNotification.value = `Nouvelle potion offensive obtenue : ${newValue}`;
-    setTimeout(() => { newPotionNotification.value = ''; }, 3000);
-  }
-});
-
-watch(() => store.getters.defensivePotion, (newValue, oldValue) => {
-  if (newValue !== oldValue) {
-    newPotionNotification.value = `Nouvelle potion défensive obtenue : ${newValue}`;
-    setTimeout(() => { newPotionNotification.value = ''; }, 3000);
-  }
-});
-
 function handlePotionOffer(offer) {
   potionOffer.value = offer;
 }
@@ -210,6 +201,68 @@ function startCombat(tileNumber) {
 function goToNextFloor() {
   store.dispatch('nextFloor');
   initializeTiles();
+}
+
+function interactWithTile(tileNumber) {
+  const tile = tileContent(tileNumber);
+  if (tile.effect) {
+    store.dispatch('applyReward', tile.effect);
+  }
+  if (tile.type === 'merchant') {
+    // Logique pour le marchand
+  }
+  rewardsCollected[tileNumber] = true;
+}
+
+function getRandomTileType(difficulty) {
+  const types = ['monster', 'reward', 'empty', 'beneficial', 'trap', 'merchant'];
+  const weights = [
+    0.2 + difficulty * 0.2,  // monster
+    0.2 - difficulty * 0.1,  // reward
+    0.2 - difficulty * 0.1,  // empty
+    0.2 - difficulty * 0.1,  // beneficial
+    0.1 + difficulty * 0.1,  // trap
+    0.1                      // merchant (constant)
+  ];
+
+  const random = Math.random();
+  let sum = 0;
+  for (let i = 0; i < types.length; i++) {
+    sum += weights[i];
+    if (random < sum) return types[i];
+  }
+  return types[types.length - 1];
+}
+
+function getTileContent(type, difficulty) {
+  if (type === 'monster') {
+    return getRandomMonster(difficulty) || getDefaultTile(type);
+  } else {
+    return getRandomTile(type, difficulty) || getDefaultTile(type);
+  }
+}
+
+function getRandomMonster(difficulty) {
+  const availableMonsters = gameData.monsters.filter(m => m.difficulty <= Math.ceil(difficulty * 5));
+  return availableMonsters.length > 0 
+    ? { ...availableMonsters[Math.floor(Math.random() * availableMonsters.length)], type: 'monster' }
+    : null;
+}
+
+function getRandomTile(type, difficulty) {
+  const availableTiles = gameData.tiles.filter(t => t.type === type && t.difficulty <= Math.ceil(difficulty * 5));
+  return availableTiles.length > 0
+    ? availableTiles[Math.floor(Math.random() * availableTiles.length)]
+    : null;
+}
+
+function getDefaultTile(type) {
+  return {
+    type: type,
+    name: `Salle ${type}`,
+    description: `Une salle ${type} ordinaire.`,
+    effect: {}
+  };
 }
 
 const dungeon = computed(() => store.state.dungeon);
@@ -341,4 +394,3 @@ button:disabled {
   cursor: pointer;
 }
 </style>
-
