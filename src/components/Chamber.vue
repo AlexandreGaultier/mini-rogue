@@ -1,15 +1,17 @@
 <template>
   <div class="chamber">
     <div class="tiles-grid">
-      <div v-for="i in 9" :key="i" class="tile" :class="{ 'current': currentTile === i, 'available': isAvailableTile(i) }" @click="selectTile(i)">
-        <template v-if="(tileRevealed(i) || isAvailableTile(i)) && tileContent(i)">
+      <div v-for="i in 9" :key="i" class="tile" 
+           :class="{ 'current': currentTile === i, 'available': isAvailableTile(i), 'completed': isTileCompleted(i), 'revealed': tileRevealed(i) }" 
+           @click="selectTile(i)">
+        <template v-if="tileContent(i)">
           <h3>{{ tileContent(i).name }}</h3>
-          <p>{{ tileContent(i).description }}</p>
-          <template v-if="tileContent(i).type === 'monster' && isAvailableTile(i)">
-            <p>Vie: {{ tileContent(i).health }}</p>
-            <p>Dégâts: {{ tileContent(i).damage }}</p>
-          </template>
           <template v-if="isAvailableTile(i) || currentTile === i">
+            <p>{{ tileContent(i).description }}</p>
+            <template v-if="tileContent(i).type === 'monster'">
+              <p>Vie: {{ tileContent(i).health }}</p>
+              <p>Dégâts: {{ tileContent(i).damage }}</p>
+            </template>
             <template v-if="['reward', 'beneficial'].includes(tileContent(i).type)">
               <p class="immediate-reward">{{ tileContent(i).immediateReward?.text || 'Pas de récompense immédiate' }}</p>
               <ul class="roll-rewards" v-if="tileContent(i).rollRewards">
@@ -17,6 +19,13 @@
                   {{ roll }}: {{ reward.text }}
                 </li>
               </ul>
+            </template>
+            <template v-if="tileContent(i).type === 'trap'">
+              <p>Dégâts : {{ -tileContent(i).effect.hp }} PV</p>
+            </template>
+          </template>
+          <template v-if="currentTile === i">
+            <template v-if="['reward', 'beneficial'].includes(tileContent(i).type)">
               <div v-if="currentTile === i" class="tile-details">
                 <button v-if="!diceResults[i]" @click.stop="rollDice(i)" :disabled="diceRolling[i]">Lancer le dé</button>
                 <template v-else>
@@ -43,13 +52,8 @@
                   Récupérer le butin
                 </button>
               </template>
-              <template v-else-if="isAvailableTile(i) && !rewardsCollected[i]">
-                <p>Vie: {{ tileContent(i).health }}</p>
-                <p>Dégâts: {{ tileContent(i).damage }}</p>
-              </template>
             </template>
             <template v-else-if="['empty', 'trap', 'merchant'].includes(tileContent(i).type)">
-              <p v-if="tileContent(i).type === 'trap'">Dégâts : {{ -tileContent(i).effect.hp }} PV</p>
               <button @click="interactWithTile(i)" :disabled="rewardsCollected[i]">
                 {{ rewardsCollected[i] ? 'Continuer' : 'Interagir' }}
               </button>
@@ -129,13 +133,12 @@ function tileRevealed(tileNumber) {
 }
 
 function isAvailableTile(tileNumber) {
-  if (tileNumber === 1) return true;
+  if (currentTile.value === null) return tileNumber === 1;
+  if (!rewardsCollected[currentTile.value]) return false;
   const row = Math.floor((tileNumber - 1) / 3);
   const col = (tileNumber - 1) % 3;
-  const aboveTileNumber = tileNumber - 3;
-  const leftTileNumber = tileNumber - 1;
-  return (row > 0 && rewardsCollected[aboveTileNumber] && col === (leftTileNumber % 3)) || 
-         (col > 0 && rewardsCollected[leftTileNumber] && row === Math.floor((leftTileNumber - 1) / 3));
+  return (row === Math.floor((currentTile.value - 1) / 3) && col === (currentTile.value - 1) % 3 + 1) || 
+         (row === Math.floor((currentTile.value - 1) / 3) + 1 && col === (currentTile.value - 1) % 3);
 }
 
 function selectTile(tileNumber) {
@@ -328,6 +331,10 @@ function formatReward(reward) {
   return rewardText.join(', ') || 'Aucun butin';
 }
 
+function isTileCompleted(tileNumber) {
+  return rewardsCollected[tileNumber];
+}
+
 const currentLevel = computed(() => store.state.currentLevel);
 const currentChamber = computed(() => store.state.currentChamber);
 </script>
@@ -465,6 +472,34 @@ button:disabled {
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
+}
+
+.tile.completed {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.tile.revealed h3 {
+  opacity: 1;
+}
+
+.tile:not(.available):not(.current):not(.revealed) h3 {
+  opacity: 0.5;
+}
+
+.tile.available,
+.tile.current {
+  opacity: 1;
+}
+
+.tile:not(.available):not(.current) {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.tile.completed {
+  opacity: 0.7;
+  cursor: default;
 }
 </style>
 
