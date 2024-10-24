@@ -81,14 +81,14 @@ function endCombat(playerVictory) {
   combatEnded.value = true;
   playerWon.value = playerVictory;
   combatResult.value = playerVictory ? 'Vous avez vaincu le monstre !' : 'Vous avez été vaincu...';
+  if (playerVictory && props.monster.reward) {
+    store.dispatch('setMonsterLoot', props.monster.reward);
+  }
   emit('combat-ended', playerVictory);
 }
 
 function collectReward() {
-  if (props.monster.reward) {
-    store.dispatch('applyReward', props.monster.reward);
-  }
-  emit('combat-ended', true);
+  emit('loot-collected');
 }
 </script>
 

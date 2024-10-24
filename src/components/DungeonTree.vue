@@ -1,16 +1,13 @@
 <template>
   <div v-if="dungeon && dungeon.floors" class="dungeon-tree">
     <h3>{{ dungeon.name }}</h3>
-    <div class="current-location">Niveau {{ currentFloor }} - Salle {{ currentChamber }}</div>
-    <div class="floors">
-      <div v-for="floor in dungeon.floors" :key="floor.level" class="floor">
-        <div class="level">Niveau {{ floor.level }}</div>
-        <div class="rooms">
-          <div v-for="room in floor.rooms" :key="room.number" 
-               :class="['room', room.type, { 'current': floor.level === currentFloor && room.number === currentChamber }]">
-            {{ room.number }}
-            <span v-if="room.type === 'boss'" class="boss-icon">👑</span>
-          </div>
+    <div v-for="floor in dungeon.floors" :key="floor.level" class="floor">
+      <div class="floor-label">Étage {{ floor.level }}</div>
+      <div class="rooms">
+        <div v-for="room in floor.rooms" :key="room.number" 
+             :class="['room', { 'current': isCurrentRoom(floor.level, room.number), 'boss': room.type === 'boss' }]">
+          {{ room.number }}
+          <span v-if="room.type === 'boss'" class="boss-icon">👑</span>
         </div>
       </div>
     </div>
@@ -25,7 +22,11 @@ const store = useStore();
 
 const dungeon = computed(() => store.state.dungeon);
 const currentFloor = computed(() => store.state.currentFloor);
-const currentChamber = computed(() => store.state.currentChamber);
+const currentRoom = computed(() => store.state.currentRoom);
+
+function isCurrentRoom(floorLevel, roomNumber) {
+  return currentFloor.value === floorLevel && currentRoom.value === roomNumber;
+}
 </script>
 
 <style scoped>

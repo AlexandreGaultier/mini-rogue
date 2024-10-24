@@ -5,6 +5,10 @@
         <template v-if="(tileRevealed(i) || isAvailableTile(i)) && tileContent(i)">
           <h3>{{ tileContent(i).name }}</h3>
           <p>{{ tileContent(i).description }}</p>
+          <template v-if="tileContent(i).type === 'monster' && isAvailableTile(i)">
+            <p>Vie: {{ tileContent(i).health }}</p>
+            <p>Dégâts: {{ tileContent(i).damage }}</p>
+          </template>
           <template v-if="isAvailableTile(i) || currentTile === i">
             <template v-if="['reward', 'beneficial'].includes(tileContent(i).type)">
               <p class="immediate-reward">{{ tileContent(i).immediateReward?.text || 'Pas de récompense immédiate' }}</p>
@@ -19,50 +23,49 @@
                   <p class="dice-result">
                     Résultat : {{ diceResults[i] }}
                     <br>
-                    Récompense : {{ tileContent(i).rollRewards[diceResults[i]].text }}
+                    {{ tileContent(i).rollRewards[diceResults[i]].text }}
                   </p>
-                  <button v-if="!rewardsCollected[i]" @click.stop="collectReward(i)">Récupérer</button>
+                  <button @click="collectReward(i)" :disabled="rewardsCollected[i]">Collecter la récompense</button>
                 </template>
               </div>
             </template>
             <template v-else-if="tileContent(i).type === 'monster'">
-              <MonsterFight 
-                v-if="currentTile === i && !rewardsCollected[i]"
-                :monster="tileContent(i)"
-                @combat-ended="onCombatEnded"
-              />
-              <button v-else-if="currentTile === i && !rewardsCollected[i]" @click.stop="startCombat(i)">Combattre</button>
+              <template v-if="currentTile === i && !rewardsCollected[i] && !pendingLoot">
+                <MonsterFight 
+                  :monster="tileContent(i)"
+                  @combat-ended="onCombatEnded"
+                  @loot-collected="onLootCollected(i)" 
+                />
+              </template>
+              <template v-else-if="currentTile === i && pendingLoot">
+                <p>Butin : {{ formatReward(pendingLoot) }}</p>
+                <button @click="collectMonsterLoot(i)">
+                  Récupérer le butin
+                </button>
+              </template>
+              <template v-else-if="isAvailableTile(i) && !rewardsCollected[i]">
+                <p>Vie: {{ tileContent(i).health }}</p>
+                <p>Dégâts: {{ tileContent(i).damage }}</p>
+              </template>
             </template>
             <template v-else-if="['empty', 'trap', 'merchant'].includes(tileContent(i).type)">
+              <p v-if="tileContent(i).type === 'trap'">Dégâts : {{ -tileContent(i).effect.hp }} PV</p>
               <button @click="interactWithTile(i)" :disabled="rewardsCollected[i]">
                 {{ rewardsCollected[i] ? 'Continuer' : 'Interagir' }}
               </button>
             </template>
           </template>
         </template>
-        <template v-else>
-          ?
-        </template>
       </div>
     </div>
     <button v-if="lastTileCompleted" @click="goToNextRoom" class="continue-button">
       Continuer
     </button>
-    <p>Tuile actuelle : {{ currentTile }} / 9</p>
-    <div v-if="newPotionNotification" class="potion-notification">
-      {{ newPotionNotification }}
-    </div>
-    <div v-if="potionOffer" class="potion-offer">
-      <h3>Nouvelle potion {{ potionOffer.type === 'offensivePotion' ? 'offensive' : 'défensive' }} disponible !</h3>
-      <p>Voulez-vous remplacer votre {{ potionOffer.currentPotion || 'aucune potion' }} par {{ potionOffer.newPotion }} ?</p>
-      <button @click="acceptNewPotion">Accepter</button>
-      <button @click="rejectNewPotion">Refuser</button>
-    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted, watch } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import gameData from '../data/game-data.json';
 import MonsterFight from './MonsterFight.vue';
@@ -75,13 +78,15 @@ const props = defineProps({
 });
 
 const store = useStore();
-const potionOffer = computed(() => store.getters.potionOffer);
+const potionOffer = computed(() => store.state.potionOffer);
+const pendingLoot = computed(() => store.state.pendingLoot);
 
 const revealedTiles = ref([1]);
 const diceResults = reactive({});
 const diceRolling = reactive({});
 const rewardsCollected = reactive({});
 const currentTile = ref(1);
+
 const tiles = ref([]);
 const newPotionNotification = ref('');
 const currentMonster = ref(null);
@@ -115,20 +120,8 @@ function initializeTiles() {
   Object.keys(rewardsCollected).forEach(key => delete rewardsCollected[key]);
 }
 
-function selectTile(tileNumber) {
-  if (isAvailableTile(tileNumber)) {
-    if (!revealedTiles.value.includes(tileNumber)) {
-      revealedTiles.value.push(tileNumber);
-    }
-    currentTile.value = tileNumber;
-    
-    const selectedTile = tileContent(tileNumber);
-    if (selectedTile.type === 'monster') {
-      currentMonster.value = selectedTile;
-    } else {
-      currentMonster.value = null;
-    }
-  }
+function tileContent(tileNumber) {
+  return tiles.value[tileNumber - 1];
 }
 
 function tileRevealed(tileNumber) {
@@ -136,38 +129,40 @@ function tileRevealed(tileNumber) {
 }
 
 function isAvailableTile(tileNumber) {
-  if (tileNumber === currentTile.value) return true;
-  if (tileNumber === currentTile.value + 1 && currentTile.value % 3 !== 0 && rewardsCollected[currentTile.value]) return true;
-  if (tileNumber === currentTile.value + 3 && currentTile.value <= 6 && rewardsCollected[currentTile.value]) return true;
-  return false;
+  if (tileNumber === 1) return true;
+  const row = Math.floor((tileNumber - 1) / 3);
+  const col = (tileNumber - 1) % 3;
+  const aboveTileNumber = tileNumber - 3;
+  const leftTileNumber = tileNumber - 1;
+  return (row > 0 && rewardsCollected[aboveTileNumber] && col === (leftTileNumber % 3)) || 
+         (col > 0 && rewardsCollected[leftTileNumber] && row === Math.floor((leftTileNumber - 1) / 3));
 }
 
-function tileContent(tileNumber) {
-  return tiles.value[tileNumber - 1];
+function selectTile(tileNumber) {
+  if (!isAvailableTile(tileNumber)) return;
+  revealedTiles.value.push(tileNumber);
+  currentTile.value = tileNumber;
 }
 
 function rollDice(tileNumber) {
   diceRolling[tileNumber] = true;
   setTimeout(() => {
-    const result = Math.floor(Math.random() * 6) + 1;
-    diceResults[tileNumber] = result;
+    diceResults[tileNumber] = Math.floor(Math.random() * 6) + 1;
     diceRolling[tileNumber] = false;
   }, 1000);
 }
 
 function collectReward(tileNumber) {
   const tile = tileContent(tileNumber);
-  const rollReward = tile.rollRewards[diceResults[tileNumber]];
-  const immediateReward = tile.immediateReward;
-
-  if (immediateReward) {
-    store.dispatch('applyReward', immediateReward);
+  if (tile.immediateReward) {
+    store.dispatch('applyReward', tile.immediateReward.effect);
   }
-  
-  if (rollReward) {
-    store.dispatch('applyReward', rollReward);
+  if (diceResults[tileNumber]) {
+    const rollReward = tile.rollRewards[diceResults[tileNumber]];
+    if (rollReward && rollReward.effect) {
+      store.dispatch('applyReward', rollReward.effect);
+    }
   }
-
   rewardsCollected[tileNumber] = true;
   console.log('Récompense collectée pour la tuile:', tileNumber);
   if (tileNumber === 9) {
@@ -175,80 +170,48 @@ function collectReward(tileNumber) {
   }
 }
 
-function completeChamber() {
-  const result = store.dispatch('nextChamber');
-  if (result === 'finished') {
-    alert("Félicitations ! Vous avez terminé le donjon !");
-    // Rediriger vers une page de victoire ou le menu principal
-  } else {
-    initializeTiles();
-  }
-}
-
-function handlePotionOffer(offer) {
-  potionOffer.value = offer;
-}
-
-function acceptNewPotion() {
-  store.dispatch('acceptPotionOffer');
-}
-
-function rejectNewPotion() {
-  store.dispatch('rejectPotionOffer');
-}
-
-function onCombatEnded(playerWon) {
-  if (playerWon) {
-    rewardsCollected[currentTile.value] = true;
-    console.log('Combat gagné pour la tuile:', currentTile.value);
-    if (currentTile.value === 9) {
-      console.log('Dernière tuile complétée !');
-    }
-  }
-  currentMonster.value = null;
-}
-
-function startCombat(tileNumber) {
-  currentTile.value = tileNumber;
-}
-
 function goToNextRoom() {
   console.log('Passage à la salle suivante');
-  const currentFloorData = dungeon.value.floors.find(floor => floor.level === currentFloor.value);
-  
-  if (currentRoom.value < currentFloorData.rooms.length) {
-    // Passer à la salle suivante du même étage
-    store.commit('SET_CURRENT_ROOM', currentRoom.value + 1);
-  } else {
-    // Passer à l'étage suivant
-    const nextFloorIndex = dungeon.value.floors.findIndex(floor => floor.level === currentFloor.value) + 1;
-    if (nextFloorIndex < dungeon.value.floors.length) {
-      store.commit('SET_CURRENT_FLOOR', dungeon.value.floors[nextFloorIndex].level);
-      store.commit('SET_CURRENT_ROOM', 1);
-    } else {
-      // Le donjon est terminé
-      alert("Félicitations ! Vous avez terminé le donjon !");
-      // Ici, vous pouvez ajouter la logique pour retourner au menu principal ou commencer un nouveau donjon
-      return;
-    }
-  }
-  
-  // Réinitialiser la salle
+  store.dispatch('nextRoom');
   initializeTiles();
 }
 
 function interactWithTile(tileNumber) {
   const tile = tileContent(tileNumber);
-  if (tile.effect) {
+  if (tile.type === 'trap') {
+    if (tile.effect) {
+      store.dispatch('applyReward', tile.effect);
+      console.log('Effet du piège appliqué:', tile.effect);
+    } else {
+      console.error('Effet du piège non défini pour la tuile:', tile);
+    }
+  } else if (tile.type === 'beneficial' && tile.name === 'Fontaine de vie') {
+    if (tile.effect) {
+      store.dispatch('applyReward', tile.effect);
+      console.log('Effet de la fontaine de vie appliqué:', tile.effect);
+    } else {
+      console.error('Effet de la fontaine de vie non défini pour la tuile:', tile);
+    }
+  } else if (tile.effect) {
     store.dispatch('applyReward', tile.effect);
-  }
-  if (tile.type === 'merchant') {
-    // Logique pour le marchand
   }
   rewardsCollected[tileNumber] = true;
   console.log('Interaction avec la tuile:', tileNumber);
   if (tileNumber === 9) {
     console.log('Dernière tuile complétée !');
+  }
+}
+
+function collectMonsterLoot(tileNumber) {
+  if (pendingLoot.value) {  // Ajoutez cette vérification
+    store.dispatch('applyReward', pendingLoot.value);
+    rewardsCollected[tileNumber] = true;
+    store.commit('CLEAR_LOOT');
+    if (tileNumber === 9) {
+      console.log('Dernière tuile complétée !');
+    }
+  } else {
+    console.error('Aucun butin en attente à collecter');
   }
 }
 
@@ -276,7 +239,14 @@ function getTileContent(type, difficulty) {
   if (type === 'monster') {
     return getRandomMonster(difficulty) || getDefaultTile(type);
   } else {
-    return getRandomTile(type, difficulty) || getDefaultTile(type);
+    const tile = getRandomTile(type, difficulty) || getDefaultTile(type);
+    // Ajuster les noms des tuiles
+    if (tile.type === 'trap') {
+      tile.name = 'Piège à pointes';
+    } else if (tile.type === 'empty') {
+      tile.name = 'Salle vide';
+    }
+    return tile;
   }
 }
 
@@ -297,8 +267,14 @@ function getRandomTile(type, difficulty) {
 function getDefaultTile(type) {
   return {
     type: type,
-    name: `Salle ${type}`,
-    description: `Une salle ${type} ordinaire.`,
+    name: type === 'trap' ? 'Piège à pointes' : 
+          type === 'empty' ? 'Salle vide' : 
+          type === 'merchant' ? 'Marchand ambulant' :
+          `Salle ${type}`,
+    description: type === 'trap' ? "Un piège mortel avec des pointes acérées." :
+                 type === 'empty' ? "Une salle sans rien de particulier." :
+                 type === 'merchant' ? "Un marchand propose ses services." :
+                 `Une salle ${type} ordinaire.`,
     immediateReward: { text: "Pas de récompense immédiate" },
     rollRewards: {
       1: { text: "Rien ne se passe" },
@@ -307,8 +283,49 @@ function getDefaultTile(type) {
       4: { text: "Rien ne se passe" },
       5: { text: "Rien ne se passe" },
       6: { text: "Rien ne se passe" }
-    }
+    },
+    effect: type === 'trap' ? { hp: -3 } : null
   };
+}
+
+function onCombatEnded(playerWon) {
+  if (playerWon) {
+    const monster = tileContent(currentTile.value);
+    if (monster.reward) {
+      store.dispatch('setMonsterLoot', monster.reward);
+    }
+  } else {
+    rewardsCollected[currentTile.value] = true;
+  }
+}
+
+function startCombat(tileNumber) {
+  currentTile.value = tileNumber;
+}
+
+function onLootCollected(tileNumber) {
+  collectMonsterLoot(tileNumber);
+  currentTile.value = null;
+  checkAvailableTiles();
+}
+
+function checkAvailableTiles() {
+  for (let i = 1; i <= 9; i++) {
+    if (isAvailableTile(i) && !rewardsCollected[i]) {
+      return; // Il y a encore des tuiles disponibles
+    }
+  }
+  // Si aucune tuile n'est disponible, activez le bouton "Continuer"
+  lastTileCompleted.value = true;
+}
+
+function formatReward(reward) {
+  if (!reward) return 'Aucun butin';
+  let rewardText = [];
+  if (reward.gold) rewardText.push(`${reward.gold} or`);
+  if (reward.exp) rewardText.push(`${reward.exp} XP`);
+  if (reward.type === 'xp' && reward.value) rewardText.push(`${reward.value} XP`);
+  return rewardText.join(', ') || 'Aucun butin';
 }
 
 const currentLevel = computed(() => store.state.currentLevel);

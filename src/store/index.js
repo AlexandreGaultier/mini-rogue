@@ -17,21 +17,17 @@ export default createStore({
     potionOffer: null,
     currentFloor: 1,
     currentRoom: 1,
+    pendingLoot: null,
   },
   mutations: {
     UPDATE_STAT(state, { stat, value }) {
       if (stat in state.character) {
         const maxValue = getMaxValue(stat);
-        state.character[stat] = Math.max(0, Math.min(state.character[stat] + value, maxValue));
+        const newValue = Number(state.character[stat]) + Number(value);
+        state.character[stat] = Math.max(0, Math.min(newValue, maxValue));
       } else {
         console.error(`Statistique non reconnue: ${stat}`);
       }
-    },
-    SET_CURRENT_LEVEL(state, level) {
-      state.currentLevel = level;
-    },
-    SET_CURRENT_CHAMBER(state, chamber) {
-      state.currentChamber = chamber;
     },
     SET_POTION(state, { type, potion }) {
       state.character[type] = potion;
@@ -42,36 +38,33 @@ export default createStore({
     SET_DUNGEON(state, dungeon) {
       state.dungeon = dungeon;
     },
-    REGENERATE_TILES(state) {
-      // Cette fonction sera appelée pour régénérer les tuiles
-      // Vous pouvez implémenter la logique de génération ici si vous le souhaitez
-      // ou laisser le composant Chamber s'en charger
-    },
-    INCREMENT_FLOOR(state) {
-      state.currentFloor++;
-      state.currentChamber = 1;
-    },
     SET_CURRENT_FLOOR(state, floor) {
       state.currentFloor = floor;
     },
     SET_CURRENT_ROOM(state, room) {
       state.currentRoom = room;
     },
+    SET_PENDING_LOOT(state, loot) {
+      state.pendingLoot = loot;
+    },
+    CLEAR_LOOT(state) {
+      state.pendingLoot = null;
+    },
   },
   actions: {
-    applyReward({ commit, dispatch }, reward) {
-      console.log("Récompense appliquée:", reward);
-      if (reward && reward.effect) {
-        Object.entries(reward.effect).forEach(([stat, value]) => {
-          console.log(`Mise à jour de la statistique: ${stat} avec la valeur: ${value}`);
-          if (stat === 'offensivePotion' || stat === 'defensivePotion') {
-            dispatch('offerNewPotion', { type: stat, value });
-          } else {
-            commit('UPDATE_STAT', { stat, value });
-          }
-        });
-      } else {
-        console.error("Format de récompense invalide:", reward);
+    initializeGame({ commit, state }) {
+      const selectedDungeon = gameData.dungeons[0]; // Sélectionnez le donjon que vous voulez
+      commit('SET_DUNGEON', selectedDungeon);
+      commit('SET_CURRENT_FLOOR', 1);
+      commit('SET_CURRENT_ROOM', 1);
+    },
+    applyReward({ commit }, reward) {
+      for (const [stat, value] of Object.entries(reward)) {
+        if (stat === 'offensivePotion' || stat === 'defensivePotion') {
+          commit('SET_POTION', { type: stat, potion: value });
+        } else {
+          commit('UPDATE_STAT', { stat, value: Number(value) });
+        }
       }
     },
     offerNewPotion({ commit, state }, { type, value }) {
@@ -94,23 +87,21 @@ export default createStore({
     rejectPotionOffer({ commit }) {
       commit('SET_POTION_OFFER', null);
     },
-    nextChamber({ commit, state, getters }) {
-      const currentFloor = getters.currentFloor;
-      if (state.currentChamber < currentFloor.rooms.length) {
-        commit('SET_CURRENT_CHAMBER', state.currentChamber + 1);
-      } else if (state.currentLevel < state.dungeon.floors.length) {
-        commit('SET_CURRENT_LEVEL', state.currentLevel + 1);
-        commit('SET_CURRENT_CHAMBER', 1);
+    nextRoom({ commit, state }) {
+      const currentFloor = state.dungeon.floors.find(f => f.level === state.currentFloor);
+      if (state.currentRoom < currentFloor.rooms.length) {
+        commit('SET_CURRENT_ROOM', state.currentRoom + 1);
+      } else if (state.currentFloor < state.dungeon.floors.length) {
+        commit('SET_CURRENT_FLOOR', state.currentFloor + 1);
+        commit('SET_CURRENT_ROOM', 1);
       } else {
-        // Le donjon est terminé
-        return 'finished';
+        // Donjon terminé
+        console.log('Donjon terminé !');
       }
-      commit('REGENERATE_TILES');
-      return 'next';
     },
-    nextFloor({ commit }) {
-      commit('INCREMENT_FLOOR');
-    },
+    setMonsterLoot({ commit }, loot) {
+      commit('SET_PENDING_LOOT', loot);
+    }
   },
   getters: {
     character: state => state.character,
@@ -119,9 +110,7 @@ export default createStore({
     offensivePotion: state => state.character.offensivePotion,
     defensivePotion: state => state.character.defensivePotion,
     potionOffer: state => state.potionOffer,
-    currentFloor: (state) => {
-      return state.dungeon.floors.find(floor => floor.level === state.currentLevel);
-    }
+    currentFloorData: (state) => state.dungeon.floors.find(f => f.level === state.currentFloor),
   }
 });
 

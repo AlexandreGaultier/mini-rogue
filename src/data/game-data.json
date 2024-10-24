@@ -266,9 +266,15 @@
       }
     },
     {
-      "name": "Salle vide",
+      "type": "trap",
+      "name": "Piège à pointes",
+      "description": "Un piège mortel avec des pointes acérées.",
+      "effect": { "hp": -3 }
+    },
+    {
       "type": "empty",
-      "description": "Une salle vide et silencieuse."
+      "name": "Salle vide",
+      "description": "Une salle sans rien de particulier."
     },
     {
       "name": "Fontaine de vie",
@@ -277,15 +283,8 @@
       "effect": { "hp": 5 }
     },
     {
-      "name": "Piège à pointes",
-      "type": "trap",
-      "difficulty": 3,
-      "description": "Un piège sournois caché dans le sol.",
-      "effect": { "hp": -3 }
-    },
-    {
-      "name": "Marchand ambulant",
       "type": "merchant",
+      "name": "Marchand ambulant",
       "description": "Un marchand propose ses services.",
       "options": [
         { "text": "Acheter une potion de soin (2 or)", "cost": { "gold": 2 }, "effect": { "hp": 10 } },
@@ -299,7 +298,7 @@
       "name": "Gobelin faible",
       "health": 4,
       "damage": 1,
-      "reward": { "type": "xp", "value": 1 },
+      "reward": { "exp": 1, "gold": 1 },
       "difficulty": 1
     },
     {
