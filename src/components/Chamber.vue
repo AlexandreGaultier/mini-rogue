@@ -206,8 +206,16 @@ function interactWithTile(tileNumber) {
 }
 
 function collectMonsterLoot(tileNumber) {
-  if (pendingLoot.value) {  // Ajoutez cette vérification
-    store.dispatch('applyReward', pendingLoot.value);
+  if (pendingLoot.value) {
+    if (typeof pendingLoot.value === 'object') {
+      if (pendingLoot.value.type === 'xp') {
+        // Pour les récompenses de type { type: 'xp', value: 1 }
+        store.dispatch('applyReward', { exp: pendingLoot.value.value });
+      } else {
+        // Pour les récompenses de type { exp: 1, gold: 1 }
+        store.dispatch('applyReward', pendingLoot.value);
+      }
+    }
     rewardsCollected[tileNumber] = true;
     store.commit('CLEAR_LOOT');
     if (tileNumber === 9) {

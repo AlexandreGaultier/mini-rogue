@@ -22,8 +22,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import Chamber from '../components/Chamber.vue';
 import CharacterBoard from '../components/CharacterBoard.vue';
 import DungeonTree from '../components/DungeonTree.vue';
@@ -31,6 +32,7 @@ import gameData from '../data/game-data.json';
 import MonsterHealthBar from '../components/MonsterHealthBar.vue';
 
 const store = useStore();
+const router = useRouter();
 
 const dungeon = computed(() => store.state.dungeon);
 const currentLevel = ref(1);
@@ -41,6 +43,14 @@ const currentMonster = ref({
   name: "Gobelin",
   currentHealth: 20,
   maxHealth: 30
+});
+
+const character = computed(() => store.state.character);
+
+watch(() => character.value.hp, (newHp) => {
+  if (newHp <= 0) {
+    router.push('/game-over');
+  }
 });
 
 function nextChamber() {

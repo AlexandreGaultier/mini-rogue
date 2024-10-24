@@ -20,8 +20,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import MonsterHealthBar from './MonsterHealthBar.vue';
 
 const props = defineProps({
@@ -32,12 +33,18 @@ const props = defineProps({
 });
 
 const store = useStore();
+const router = useRouter();
 const emit = defineEmits(['combat-ended']);
 
 const monsterHealth = ref(props.monster.health);
 const playerHealth = computed(() => store.state.character.hp);
 const playerArmor = computed(() => store.state.character.armor);
-const playerWhiteDice = computed(() => store.state.character.whiteDice);
+const playerWhiteDice = computed(() => {
+  const exp = store.state.character.exp;
+  if (exp >= 18) return 3;
+  if (exp >= 6) return 2;
+  return 1;
+});
 const combatEnded = ref(false);
 const playerWon = ref(false);
 const combatResult = ref('');
@@ -45,6 +52,12 @@ const diceRolled = ref(false);
 const playerDiceResults = ref([]);
 const monsterDiceResult = ref(0);
 const isRolling = ref(false);
+
+watch(() => playerHealth.value, (newHealth) => {
+  if (newHealth <= 0) {
+    router.push('/game-over');
+  }
+});
 
 function rollDice() {
   isRolling.value = true;
@@ -63,17 +76,20 @@ function rollDice() {
     // Appliquer les dégâts au monstre
     monsterHealth.value = Math.max(0, monsterHealth.value - playerDamage);
 
-    if (monsterHealth.value <= 0) {
-      endCombat(true);
-    } else if (monsterDiceResult.value > playerArmor.value) {
-      // Appliquer les dégâts au joueur
-      store.commit('UPDATE_STAT', { stat: 'hp', value: -props.monster.damage });
-      if (playerHealth.value <= 0) {
-        endCombat(false);
+    // Attendre un court instant pour que les dés soient affichés avant de terminer le combat
+    setTimeout(() => {
+      if (monsterHealth.value <= 0) {
+        endCombat(true);
+      } else if (monsterDiceResult.value > playerArmor.value) {
+        // Appliquer les dégâts au joueur
+        store.commit('UPDATE_STAT', { stat: 'hp', value: -props.monster.damage });
+        if (playerHealth.value <= 0) {
+          endCombat(false);
+        }
       }
-    }
 
-    isRolling.value = false;
+      isRolling.value = false;
+    }, 1500); // Changé de 1000 à 1500 ms
   }, 500);
 }
 
