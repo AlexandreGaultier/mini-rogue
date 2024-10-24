@@ -142,6 +142,7 @@
       "name": "Trésor",
       "type": "reward",
       "difficulty": 1,
+      "mechanism": "DiceRoll6",
       "immediateReward": {
         "text": "+1 pièce d'or",
         "effect": { "gold": 1 }
@@ -164,19 +165,21 @@
           "effect": { "offensivePotion": "random" }
         },
         "5": {
-          "text": "+2 points d'expérience",
-          "effect": { "exp": 2 }
+          "text": "Potion défensive aléatoire",
+          "effect": { "defensivePotion": "random" }
         },
         "6": {
-          "text": "+1 armure",
-          "effect": { "armor": 1 }
+          "text": "+1 ration",
+          "effect": { "rations": 1 }
         }
       }
     },
     {
-      "name": "Bibliothèque",
+      "name": "Bibliothèque hantée",
       "type": "beneficial",
       "difficulty": 2,
+      "mechanism": "DiceRoll2",
+      "description": "Des livres anciens flottent dans l'air, leurs pages tournent d'elles-mêmes dans un murmure sinistre.",
       "immediateReward": {
         "text": "Gagnez 1 point d'expérience",
         "effect": { "exp": 1 }
@@ -189,30 +192,18 @@
         "2": {
           "text": "+3 points d'expérience",
           "effect": { "exp": 3 }
-        },
-        "3": {
-          "text": "+1 ration",
-          "effect": { "rations": 1 }
-        },
-        "4": {
-          "text": "Potion défensive aléatoire",
-          "effect": { "defensivePotion": "random" }
-        },
-        "5": {
-          "text": "+3 points de vie",
-          "effect": { "hp": 3 }
-        },
-        "6": {
-          "text": "+1 armure",
-          "effect": { "armor": 1 }
         }
       }
     },
     {
-      "name": "Autel",
+      "name": "Autel sacrificiel",
+      "type": "beneficial",
+      "difficulty": 3,
+      "mechanism": "DiceRoll6",
+      "description": "Un autel de pierre sombre, taché de sang séché. Des runes anciennes pulsent faiblement sur sa surface.",
       "immediateReward": {
-        "text": "Sacrifiez 1 PV pour gagner 1 pièce d'or",
-        "effect": { "hp": -1, "gold": 1 }
+        "text": "Sacrifiez 2 PV pour gagner 1 pièce d'or",
+        "effect": { "hp": -2, "gold": 1 }
       },
       "rollRewards": {
         "1": {
@@ -242,63 +233,278 @@
       }
     },
     {
-      "name": "Armurerie",
+      "name": "Fontaine de sang",
+      "type": "beneficial",
+      "difficulty": 4,
+      "mechanism": "ImmediateReward",
+      "description": "Un liquide rouge et épais coule d'une fontaine sculptée en forme de gargouille grimaçante.",
       "immediateReward": {
-        "text": "+1 armure",
+        "text": "Buvez le sang pour gagner 5 PV, mais perdez 1 point d'expérience",
+        "effect": { "hp": 5, "exp": -1 }
+      }
+    },
+    {
+      "name": "Miroir des âmes",
+      "type": "trap",
+      "difficulty": 3,
+      "mechanism": "DiceRoll2",
+      "description": "Votre reflet vous attaque : -2 PV",
+      "effect": { "hp": -2 },
+      "rollRewards": {
+        "1": {
+          "text": "Votre reflet vous attaque : -2 PV",
+          "effect": { "hp": -2 }
+        },
+        "2": {
+          "text": "Vous maîtrisez votre reflet : +3 exp",
+          "effect": { "exp": 3 }
+        }
+      }
+    },
+    {
+      "name": "Crypte des anciens",
+      "type": "reward",
+      "difficulty": 5,
+      "mechanism": "DiceRoll3",
+      "description": "Des sarcophages ornés s'alignent le long des murs, leurs occupants semblent vous observer.",
+      "rollRewards": {
+        "1": {
+          "text": "Malédiction : -1 à toutes les stats",
+          "effect": { "hp": -1, "gold": -1, "armor": -1, "exp": -1 }
+        },
+        "2": {
+          "text": "Trésor ancien : +5 or",
+          "effect": { "gold": 5 }
+        },
+        "3": {
+          "text": "Bénédiction des anciens : +1 à toutes les stats",
+          "effect": { "hp": 1, "gold": 1, "armor": 1, "exp": 1 }
+        }
+      }
+    },
+    {
+      "name": "Forge abandonnée",
+      "type": "beneficial",
+      "difficulty": 3,
+      "mechanism": "DiceRoll3",
+      "description": "Des braises rougeoyantes illuminent encore les vestiges d'une ancienne forge.",
+      "immediateReward": {
+        "text": "Renforcez votre équipement : +1 armure",
         "effect": { "armor": 1 }
       },
       "rollRewards": {
         "1": {
-          "text": "+2 armure",
-          "effect": { "armor": 2 }
+          "text": "Trouvez un marteau enchanté : +2 dégâts pour le prochain combat",
+          "effect": { "tempDamage": 2 }
         },
         "2": {
-          "text": "+1 armure et +1 point d'expérience",
-          "effect": { "armor": 1, "exp": 1 }
+          "text": "Découvrez des techniques de forge anciennes : +2 armure",
+          "effect": { "armor": 2 }
         },
         "3": {
-          "text": "+3 points de vie",
-          "effect": { "hp": 3 }
+          "text": "Forgez une arme légendaire : +5 exp, +3 or",
+          "effect": { "exp": 5, "gold": 3 }
+        }
+      }
+    },
+    {
+      "name": "Jardin empoisonné",
+      "type": "trap",
+      "difficulty": 2,
+      "mechanism": "DiceRoll2",
+      "description": "Des plantes aux couleurs vives et aux formes étranges emplissent la pièce. L'air est lourd de spores toxiques.",
+      "effect": { "hp": -2, "rations": -1 },
+      "rollRewards": {
+        "1": {
+          "text": "Trouvez un antidote : annule les effets négatifs",
+          "effect": { "hp": 2, "rations": 1 }
         },
-        "4": {
-          "text": "+2 pièces d'or",
-          "effect": { "gold": 2 }
+        "2": {
+          "text": "Récoltez des herbes rares : +1 potion offensive",
+          "effect": { "offensivePotion": "random" }
+        }
+      }
+    },
+    {
+      "name": "Salle des échos",
+      "type": "beneficial",
+      "difficulty": 1,
+      "mechanism": "DiceRoll3",
+      "description": "Vos pas résonnent étrangement dans cette pièce vide. Chaque son semble amplifier votre force intérieure.",
+      "rollRewards": {
+        "1": {
+          "text": "L'écho vous désoriente : -1 PV",
+          "effect": { "hp": -1 }
         },
-        "5": {
-          "text": "+1 ration",
-          "effect": { "rations": 1 }
+        "2": {
+          "text": "L'écho vous inspire : +2 exp",
+          "effect": { "exp": 2 }
         },
-        "6": {
-          "text": "Potion défensive aléatoire",
+        "3": {
+          "text": "L'écho révèle un passage secret : +3 or",
+          "effect": { "gold": 3 }
+        }
+      }
+    },
+    {
+      "name": "Puits des âmes",
+      "type": "trap",
+      "difficulty": 4,
+      "mechanism": "DiceRoll2",
+      "description": "Un puits sans fond émet une lueur spectrale. Des murmures plaintifs s'élèvent de ses profondeurs.",
+      "immediateReward": {
+        "text": "Perdez 3 PV et 2 points d'expérience",
+        "effect": { "hp": -3, "exp": -2 }
+      },
+      "rollRewards": {
+        "1": {
+          "text": "Résistez à l'appel du puits : +5 exp, +3 PV",
+          "effect": { "exp": 5, "hp": 3 }
+        },
+        "2": {
+          "text": "Votre âme est torturée : -5 PV",
+          "effect": { "hp": -5 }
+        }
+      }
+    },
+    {
+      "name": "Sanctuaire oublié",
+      "type": "beneficial",
+      "difficulty": 3,
+      "mechanism": "DiceRoll2",
+      "description": "Un autel dédié à une divinité oubliée trône au centre de la pièce. Une aura de paix vous enveloppe.",
+      "immediateReward": {
+        "text": "Recevez la bénédiction : +2 PV, +1 exp",
+        "effect": { "hp": 2, "exp": 1 }
+      },
+      "rollRewards": {
+        "1": {
+          "text": "Offrande acceptée : +3 or, +2 exp",
+          "effect": { "gold": 3, "exp": 2 }
+        },
+        "2": {
+          "text": "Illumination divine : +1 à toutes les stats",
+          "effect": { "hp": 1, "gold": 1, "armor": 1, "exp": 1, "rations": 1 }
+        }
+      }
+    },
+    {
+      "name": "Salle des illusions",
+      "type": "trap",
+      "difficulty": 3,
+      "mechanism": "DiceRoll2",
+      "description": "Des miroirs déformants tapissent les murs, créant des reflets cauchemardesques de vous-même.",
+      "effect": { "hp": -2, "exp": -1 },
+      "rollRewards": {
+        "1": {
+          "text": "Percez les illusions : +3 exp",
+          "effect": { "exp": 3 }
+        },
+        "2": {
+          "text": "Maîtrisez les illusions : +1 potion défensive",
           "effect": { "defensivePotion": "random" }
         }
       }
     },
     {
-      "type": "trap",
-      "name": "Piège à pointes",
-      "description": "Un piège mortel avec des pointes acérées.",
-      "effect": { "hp": -3 }
-    },
-    {
-      "type": "empty",
-      "name": "Salle vide",
-      "description": "Une salle sans rien de particulier."
-    },
-    {
-      "name": "Fontaine de vie",
+      "name": "Chambre de cristal",
       "type": "beneficial",
-      "description": "Une fontaine magique qui restaure vos forces.",
-      "effect": { "hp": 5 }
+      "difficulty": 2,
+      "mechanism": "DiceRoll2",
+      "description": "Des cristaux multicolores scintillent sur les murs, émettant une douce lumière apaisante.",
+      "immediateReward": {
+        "text": "La lumière vous revigore : +3 PV",
+        "effect": { "hp": 3 }
+      },
+      "rollRewards": {
+        "1": {
+          "text": "Un cristal se détache : +2 or",
+          "effect": { "gold": 2 }
+        },
+        "2": {
+          "text": "Absorption d'énergie cristalline : +4 exp",
+          "effect": { "exp": 4 }
+        }
+      }
     },
     {
-      "type": "merchant",
+      "name": "Fosse aux serpents",
+      "type": "trap",
+      "difficulty": 5,
+      "mechanism": "DiceRoll2",
+      "description": "Le sol s'effondre sous vos pieds, vous précipitant dans une fosse grouillante de serpents venimeux.",
+      "effect": { "hp": -5, "armor": -1 },
+      "rollRewards": {
+        "1": {
+          "text": "Échappez aux serpents : +5 exp, +1 potion offensive",
+          "effect": { "exp": 5, "offensivePotion": "random" }
+        },
+        "2": {
+          "text": "Vous êtes dévoré par les serpents : -5 PV, -1 armure",
+          "effect": { "hp": -5, "armor": -1 }
+        }
+      }
+    },
+    {
+      "name": "Nexus arcanique",
+      "type": "beneficial",
+      "difficulty": 4,
+      "mechanism": "DiceRoll3",
+      "description": "Des flux d'énergie magique convergent au centre de cette pièce, créant un vortex de puissance pure.",
+      "rollRewards": {
+        "1": {
+          "text": "Surcharge magique : -2 PV, +3 exp",
+          "effect": { "hp": -2, "exp": 3 }
+        },
+        "2": {
+          "text": "Harmonisation arcanique : +1 à toutes les stats",
+          "effect": { "hp": 1, "gold": 1, "armor": 1, "exp": 1, "rations": 1 }
+        },
+        "3": {
+          "text": "Révélation mystique : +5 exp, +1 potion aléatoire",
+          "effect": { "exp": 5, "offensivePotion": "random" }
+        }
+      }
+    },
+    {
+      "name": "Cimetière miniature",
+      "type": "trap",
+      "difficulty": 3,
+      "mechanism": "DiceRoll2",
+      "description": "Des rangées de petites tombes s'étendent devant vous, chacune portant le nom d'un aventurier tombé.",
+      "effect": { "hp": -3, "exp": 2 },
+      "rollRewards": {
+        "1": {
+          "text": "Hommage aux héros déchus : +4 exp",
+          "effect": { "exp": 4 }
+        },
+        "2": {
+          "text": "Découverte d'un trésor caché : +3 or, +1 ration",
+          "effect": { "gold": 3, "rations": 1 }
+        }
+      }
+    },
+    {
+      "name": "Salle vide",
+      "type": "empty",
+      "difficulty": 1,
+      "mechanism": "ImmediateReward",
+      "description": "Une salle sans rien de particulier.",
+      "immediateReward": {
+        "text": "Rien ne se passe",
+        "effect": {}
+      }
+    },
+    {
       "name": "Marchand ambulant",
+      "type": "merchant",
+      "difficulty": 1,
+      "mechanism": "ImmediateReward",
       "description": "Un marchand propose ses services.",
-      "options": [
-        { "text": "Acheter une potion de soin (2 or)", "cost": { "gold": 2 }, "effect": { "hp": 10 } },
-        { "text": "Acheter une armure légère (3 or)", "cost": { "gold": 3 }, "effect": { "armor": 1 } }
-      ]
+      "immediateReward": {
+        "text": "Acheter des objets",
+        "effect": {}
+      }
     }
   ],
   "monsters": [
@@ -615,5 +821,22 @@
     "Votre dernier souffle se perd dans le labyrinthe, emportant avec lui vos espoirs déchus.",
     "Les profondeurs vous accueillent dans leur étreinte glaciale, votre histoire à jamais inachevée.",
     "Votre chute devient une mise en garde silencieuse pour les prochains aventuriers téméraires."
+  ],
+  "dungeonLore": [
+    "Les murs suintants semblent murmurer les secrets des âmes tourmentées qui ont péri ici.",
+    "Une odeur de décomposition et de magie noire imprègne l'air, témoignant des horreurs qui se sont déroulées en ces lieux.",
+    "Des écritures anciennes gravées dans la pierre racontent l'histoire d'un royaume englouti par les ténèbres.",
+    "Le sol est jonché d'ossements, vestiges silencieux des innombrables victimes de ce labyrinthe maudit.",
+    "Des ombres dansantes sur les murs donnent l'impression que le donjon lui-même est vivant et vous observe.",
+    "Un froid surnaturel vous glace jusqu'aux os, comme si les spectres du passé cherchaient à drainer votre chaleur vitale.",
+    "Le son lointain de chaînes qui s'entrechoquent évoque les âmes enchaînées à ce lieu pour l'éternité.",
+    "Des fresques effacées racontent l'histoire d'un sorcier fou et de ses expériences contre nature.",
+    "L'écho de vos pas semble réveiller des murmures anciens, comme si le donjon se souvenait de chaque intrus.",
+    "Une brume éthérée s'accroche au sol, dissimulant peut-être les restes de ceux qui ont échoué avant vous.",
+    "Les torches vacillent sans raison apparente, projetant des ombres qui semblent avoir une volonté propre.",
+    "Un sentiment de désespoir imprègne l'atmosphère, vestige de l'angoisse de milliers d'âmes perdues.",
+    "Des symboles occultes gravés dans les dalles palpitent faiblement, alimentés par une magie ancestrale et maléfique.",
+    "L'air est lourd de l'odeur du soufre et de la putréfaction, comme si l'enfer lui-même avait fait une incursion en ce lieu.",
+    "Le silence oppressant n'est brisé que par le battement sourd de votre cœur et le murmure distant de dangers inconnus."
   ]
 }
