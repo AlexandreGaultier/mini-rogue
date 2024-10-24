@@ -62,7 +62,7 @@ export default createStore({
       for (const [stat, value] of Object.entries(reward)) {
         if (stat === 'offensivePotion' || stat === 'defensivePotion') {
           commit('SET_POTION', { type: stat, potion: value });
-        } else if (stat === 'exp' || stat === 'gold' || stat === 'hp' || stat === 'armor' || stat === 'rations') {
+        } else if (['exp', 'gold', 'hp', 'armor', 'rations'].includes(stat)) {
           commit('UPDATE_STAT', { stat, value: Number(value) });
         } else {
           console.warn(`Statistique non reconnue: ${stat}`);

@@ -44,7 +44,8 @@
       "armor": 0,
       "exp": 0,
       "whiteDice": 1,
-      "items": [{ "name": "Bénédiction", "quantity": 1 }],
+      "offensivePotion": null,
+      "defensivePotion": null,
       "skills": [
         { "name": "Soin divin", "usageType": "combat" },
         { "name": "Protection sacrée", "usageType": "chamber" }
@@ -60,6 +61,8 @@
       "armor": 1,
       "exp": 0,
       "whiteDice": 1,
+      "offensivePotion": null,
+      "defensivePotion": null,
       "skills": [
         { "name": "Frappe divine", "usageType": "combat" },
         { "name": "Aura de courage", "usageType": "chamber" }
@@ -68,13 +71,15 @@
     {
       "id": 5,
       "name": "Barbare",
-      "hp": 14,
-      "maxHp": 14,
+      "hp": 15,
+      "maxHp": 15,
       "gold": 1,
       "rations": 5,
       "armor": 0,
       "exp": 0,
       "whiteDice": 1,
+      "offensivePotion": null,
+      "defensivePotion": null,
       "skills": [
         { "name": "Rage berserk", "usageType": "combat" },
         { "name": "Cri de guerre", "usageType": "chamber" }
@@ -85,11 +90,13 @@
       "name": "Archer",
       "hp": 12,
       "maxHp": 12,
-      "gold": 4,
+      "gold": 3,
       "rations": 3,
       "armor": 0,
       "exp": 0,
       "whiteDice": 1,
+      "offensivePotion": null,
+      "defensivePotion": null,
       "skills": [
         { "name": "Tir précis", "usageType": "combat" },
         { "name": "Oeil de faucon", "usageType": "chamber" }
@@ -99,9 +106,9 @@
       "id": 7,
       "name": "Alchimiste",
       "hp": 11,
-      "maxHp": 20,
-      "gold": 6,
-      "rations": 2,
+      "maxHp": 11,
+      "gold": 4,
+      "rations": 3,
       "armor": 0,
       "exp": 0,
       "whiteDice": 1,
@@ -122,6 +129,8 @@
       "armor": 0,
       "exp": 0,
       "whiteDice": 1,
+      "offensivePotion": null,
+      "defensivePotion": null,
       "skills": [
         { "name": "Forme animale", "usageType": "combat" },
         { "name": "Communion avec la nature", "usageType": "chamber" }
@@ -306,7 +315,7 @@
       "name": "Rat géant",
       "health": 6,
       "damage": 2,
-      "reward": { "type": "xp", "value": 1 },
+      "reward": { "exp": 1, "gold": 2 },
       "difficulty": 2
     },
     {
@@ -314,7 +323,7 @@
       "name": "Kobold",
       "health": 8,
       "damage": 3,
-      "reward": { "type": "xp", "value": 2 },
+      "reward": { "exp": 2, "gold": 3 },
       "difficulty": 3
     },
     {
@@ -322,7 +331,7 @@
       "name": "Soldat squelette",
       "health": 10,
       "damage": 4,
-      "reward": { "type": "xp", "value": 2 },
+      "reward": { "exp": 2, "gold": 4 },
       "difficulty": 4
     },
     {
@@ -330,7 +339,7 @@
       "name": "Serpent ailé",
       "health": 12,
       "damage": 6,
-      "reward": { "type": "xp", "value": 3 },
+      "reward": { "exp": 3, "gold": 5 },
       "difficulty": 5
     },
     {
@@ -338,7 +347,7 @@
       "name": "Garde maudit",
       "health": 15,
       "damage": 8,
-      "reward": { "type": "xp", "value": 3 },
+      "reward": { "exp": 3, "gold": 6 },
       "difficulty": 6
     },
     {
@@ -346,8 +355,128 @@
       "name": "Minotaure",
       "health": 20,
       "damage": 10,
-      "reward": { "type": "xp", "value": 4 },
+      "reward": { "exp": 4, "gold": 8 },
       "difficulty": 7
+    },
+    {
+      "type": "monster",
+      "name": "Slime acide",
+      "health": 5,
+      "damage": 2,
+      "reward": { "exp": 1, "gold": 2 },
+      "difficulty": 2
+    },
+    {
+      "type": "monster",
+      "name": "Gobelours",
+      "health": 14,
+      "damage": 5,
+      "reward": { "exp": 3, "gold": 5 },
+      "difficulty": 5
+    },
+    {
+      "type": "monster",
+      "name": "Harpie",
+      "health": 10,
+      "damage": 7,
+      "reward": { "exp": 2, "gold": 4 },
+      "difficulty": 4
+    },
+    {
+      "type": "monster",
+      "name": "Ogre",
+      "health": 25,
+      "damage": 12,
+      "reward": { "exp": 5, "gold": 10 },
+      "difficulty": 8
+    },
+    {
+      "type": "monster",
+      "name": "Spectre",
+      "health": 8,
+      "damage": 8,
+      "reward": { "exp": 3, "gold": 6 },
+      "difficulty": 6
+    },
+    {
+      "type": "monster",
+      "name": "Troll des cavernes",
+      "health": 30,
+      "damage": 15,
+      "reward": { "exp": 6, "gold": 12 },
+      "difficulty": 9
+    },
+    {
+      "type": "monster",
+      "name": "Chimère",
+      "health": 35,
+      "damage": 18,
+      "reward": { "exp": 7, "gold": 15 },
+      "difficulty": 10
+    },
+    {
+      "type": "monster",
+      "name": "Élémentaire de feu",
+      "health": 22,
+      "damage": 14,
+      "reward": { "exp": 5, "gold": 9 },
+      "difficulty": 8
+    },
+    {
+      "type": "monster",
+      "name": "Loup-garou",
+      "health": 18,
+      "damage": 10,
+      "reward": { "exp": 4, "gold": 7 },
+      "difficulty": 7
+    },
+    {
+      "type": "monster",
+      "name": "Dragon wyrmling",
+      "health": 40,
+      "damage": 20,
+      "reward": { "exp": 8, "gold": 20 },
+      "difficulty": 11
+    },
+    {
+      "type": "monster",
+      "name": "Golem de pierre",
+      "health": 30,
+      "damage": 15,
+      "reward": { "exp": 6, "gold": 10, "armor": 1 },
+      "difficulty": 9
+    },
+    {
+      "type": "monster",
+      "name": "Banshee",
+      "health": 15,
+      "damage": 12,
+      "reward": { "exp": 4, "gold": 8, "defensivePotion": "Potion de perception" },
+      "difficulty": 7
+    },
+    {
+      "type": "monster",
+      "name": "Géant des collines",
+      "health": 45,
+      "damage": 22,
+      "reward": { "exp": 8, "gold": 15, "rations": 2 },
+      "difficulty": 10
+    },
+    {
+      "type": "monster",
+      "name": "Naga gardien",
+      "health": 28,
+      "damage": 16,
+      "reward": { "exp": 7, "gold": 12, "offensivePotion": "Potion de givre" },
+      "difficulty": 9
+    },
+    {
+      "type": "monster",
+      "name": "Dryade corrompue",
+      "health": 20,
+      "damage": 10,
+      "reward": { "exp": 5, "gold": 9, "defensivePotion": "Potion de soin" },
+      "difficulty": 6
     }
   ],
   "dungeons": [
@@ -465,6 +594,26 @@
     "Les ténèbres vous engloutissent, votre quête s'achève ici dans un silence glacial.",
     "Votre dernier souffle résonne dans les couloirs vides, emportant avec lui vos rêves de gloire.",
     "Les murs froids du donjon seront votre tombeau éternel, témoin de votre échec.",
-    "Vous succombez à vos blessures, laissant derrière vous une légende inachevée."
+    "Vous succombez à vos blessures, laissant derrière vous une légende inachevée.",
+    "Les ombres du donjon engloutissent votre dernier espoir, ne laissant qu'un écho de votre existence.",
+    "Votre quête s'achève dans un murmure, perdu dans les profondeurs insondables du labyrinthe.",
+    "Les murs suintants seront les seuls témoins de votre ultime combat, à jamais oublié.",
+    "Votre nom s'efface des annales de l'histoire, englouti par les ténèbres éternelles.",
+    "Le silence assourdissant du donjon devient votre linceul, étouffant vos derniers regrets.",
+    "Vos rêves de gloire s'évanouissent, dispersés comme des cendres dans les couloirs obscurs.",
+    "La flamme de votre vie vacille une dernière fois, avant de s'éteindre dans l'obscurité absolue.",
+    "Votre destin s'achève ici, dans les entrailles froides et indifférentes de la terre.",
+    "Les créatures de l'ombre se repaissent de vos espoirs brisés, ne laissant que le néant.",
+    "Votre chute résonne dans le vide, un avertissement fugace pour ceux qui oseraient vous suivre.",
+    "Les secrets du donjon resteront à jamais scellés, votre sacrifice n'aura servi à rien.",
+    "Votre courage s'évanouit dans l'obscurité, englouti par l'implacable cruauté du destin.",
+    "Les monstres célèbrent votre défaite, votre nom devenant une légende macabre dans leurs rangs.",
+    "Votre âme erre désormais dans les limbes du donjon, à jamais prisonnière de ses murs maudits.",
+    "Le temps s'arrête pour vous, figé dans cet instant de défaite au cœur des ténèbres.",
+    "Votre épopée s'achève dans un soupir, étouffé par l'indifférence cruelle du labyrinthe.",
+    "Les ombres du donjon se referment sur vous, effaçant toute trace de votre passage.",
+    "Votre dernier souffle se perd dans le labyrinthe, emportant avec lui vos espoirs déchus.",
+    "Les profondeurs vous accueillent dans leur étreinte glaciale, votre histoire à jamais inachevée.",
+    "Votre chute devient une mise en garde silencieuse pour les prochains aventuriers téméraires."
   ]
 }
