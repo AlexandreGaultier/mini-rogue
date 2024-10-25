@@ -73,12 +73,41 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
+import { onMounted, onUnmounted } from 'vue';
 
 const router = useRouter();
+
+let audio;
 
 function goBack() {
   router.push('/');
 }
+
+async function startAudio() {
+  if (!audio) {
+    const audioModule = await import('../assets/music/background4.mp3');
+    audio = new Audio(audioModule.default);
+    audio.loop = true;
+    audio.volume = 0.3;
+  }
+  
+  try {
+    await audio.play();
+  } catch (error) {
+    console.error('Erreur lors de la lecture audio:', error);
+  }
+}
+
+onMounted(async () => {
+  await startAudio();
+});
+
+onUnmounted(() => {
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0;
+  }
+});
 </script>
 
 <style scoped>
