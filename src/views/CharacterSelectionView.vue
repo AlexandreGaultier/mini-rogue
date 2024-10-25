@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import gameData from '../data/game-data.json';
@@ -62,6 +62,24 @@ function startGame() {
     router.push('/game');
   }
 }
+
+let audio;
+const isMusicPlaying = ref(false);
+
+onMounted(async () => {
+  const audioModule = await import('../assets/music/intro.mp3');
+  audio = new Audio(audioModule.default);
+  audio.loop = true;
+  audio.volume = 0.7;
+  audio.play();
+});
+
+onUnmounted(() => {
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0;
+  }
+});
 </script>
 
 <style scoped>

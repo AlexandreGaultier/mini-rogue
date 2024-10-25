@@ -497,15 +497,25 @@
       }
     },
     {
-      "name": "Marchand ambulant",
-      "type": "merchant",
+      "name": "Vieux Fou",
+      "type": "lore",
       "difficulty": 1,
       "mechanism": "ImmediateReward",
-      "description": "Un marchand propose ses services.",
-      "immediateReward": {
-        "text": "Acheter des objets",
-        "effect": {}
-      }
+      "description": "Un vieux fou marmonne des histoires étranges sur le donjon."
+    },
+    {
+      "name": "Marchand Mystérieux",
+      "type": "merchant",
+      "difficulty": 1,
+      "mechanism": "MultipleChoice",
+      "description": "Un marchand énigmatique propose des objets rares et raconte une histoire.",
+      "choices": [
+        { "text": "Potion de vie (+5 PV)", "cost": 3, "effect": { "hp": 5 } },
+        { "text": "Armure renforcée (+2 Armure)", "cost": 4, "effect": { "armor": 2 } },
+        { "text": "Ration magique (+2 Rations)", "cost": 2, "effect": { "rations": 2 } },
+        { "text": "Potion offensive", "cost": 3, "effect": { "offensivePotion": 1 } },
+        { "text": "Potion défensive", "cost": 3, "effect": { "defensivePotion": 1 } }
+      ]
     }
   ],
   "monsters": [

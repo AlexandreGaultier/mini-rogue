@@ -7,16 +7,31 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import gameData from '../data/game-data.json';
 
 const router = useRouter();
 const deathMessage = ref('');
 
-onMounted(() => {
+let audio;
+
+onMounted(async () => {
   const messages = gameData.gameOverDialogues;
   deathMessage.value = messages[Math.floor(Math.random() * messages.length)];
+
+  const audioModule = await import('../assets/music/gameover1.mp3');
+  audio = new Audio(audioModule.default);
+  audio.loop = false;
+  audio.volume = 0.7;
+  audio.play();
+});
+
+onUnmounted(() => {
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0;
+  }
 });
 
 function returnToMenu() {

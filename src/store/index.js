@@ -18,6 +18,9 @@ export default createStore({
     currentFloor: 1,
     currentRoom: 1,
     pendingLoot: null,
+    merchantChoices: [],
+    currentMerchantTile: null,
+    logMessages: [],
   },
   mutations: {
     UPDATE_STAT(state, { stat, value }) {
@@ -53,6 +56,18 @@ export default createStore({
     },
     CLEAR_LOOT(state) {
       state.pendingLoot = null;
+    },
+    SET_MERCHANT_CHOICES(state, choices) {
+      state.merchantChoices = choices;
+    },
+    SET_CURRENT_MERCHANT_TILE(state, tileNumber) {
+      state.currentMerchantTile = tileNumber;
+    },
+    REMOVE_MERCHANT_CHOICE(state, choice) {
+      state.merchantChoices = state.merchantChoices.filter(c => c !== choice);
+    },
+    ADD_LOG_MESSAGE(state, message) {
+      state.logMessages.push(message);
     },
   },
   actions: {

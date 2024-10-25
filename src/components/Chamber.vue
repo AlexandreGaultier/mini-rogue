@@ -59,18 +59,46 @@
                 </button>
               </template>
             </template>
-            <template v-else-if="['empty', 'trap', 'merchant'].includes(tileContent(i).type)">
+            <template v-else-if="['empty', 'trap'].includes(tileContent(i).type)">
               <button @click="interactWithTile(i)" :disabled="rewardsCollected[i]">
                 {{ rewardsCollected[i] ? 'Continuer' : 'Interagir' }}
               </button>
             </template>
           </template>
         </template>
+        <template v-if="currentTile === i && tileContent(i) && tileContent(i).type === 'merchant'">
+          <div class="merchant-choices">
+            <p class="merchant-lore">{{ getRandomLore() }}</p>
+            <h4>Objets à vendre :</h4>
+            <button 
+              v-for="(choice, index) in tileContent(i).choices" 
+              :key="index"
+              @click="buyMerchantItem(i, choice)"
+              :disabled="store.state.character.gold < choice.cost || choice.purchased"
+            >
+              {{ choice.text }} ({{ choice.cost }} or)
+            </button>
+            <button @click="interactWithTile(i)" class="continue-button">
+              Poursuivre sa route
+            </button>
+          </div>
+        </template>
       </div>
     </div>
     <button v-if="lastTileCompleted" @click="goToNextRoom" class="continue-button">
       Continuer
     </button>
+    <div v-if="store.state.currentMerchantTile === i" class="merchant-choices">
+      <h4>Objets à vendre :</h4>
+      <button 
+        v-for="choice in store.state.merchantChoices" 
+        :key="choice.text"
+        @click="buyMerchantItem(choice)"
+        :disabled="store.state.character.gold < choice.cost"
+      >
+        {{ choice.text }} ({{ choice.cost }} or)
+      </button>
+    </div>
   </div>
 </template>
 
@@ -97,6 +125,9 @@ const currentRoom = computed(() => store.state.currentRoom);
 const dungeon = computed(() => store.state.dungeon);
 
 const lastTileCompleted = computed(() => rewardsCollected[9] === true);
+
+const dungeonLore = ref(gameData.dungeonLore);
+const currentLoreIndex = ref(0);
 
 onMounted(() => {
   initializeTiles();
@@ -188,15 +219,21 @@ function handleImmediateReward(tileNumber) {
 
 function interactWithTile(tileNumber) {
   const tile = tileContent(tileNumber);
-  if (tile.immediateReward) {
-    applyReward(tile.immediateReward.effect);
+  if (tile.type === 'lore') {
+    handleLoreTile(tileNumber);
+  } else if (tile.type === 'merchant') {
+    completeMerchantTile(tileNumber);
+  } else {
+    if (tile.immediateReward) {
+      applyReward(tile.immediateReward.effect);
+    }
+    if (tile.mechanism === 'ImmediateReward') {
+      applyReward(tile.effect);
+    }
+    completeTile(tileNumber);
   }
-  if (tile.mechanism === 'ImmediateReward') {
-    applyReward(tile.effect);
-  }
-  rewardsCollected[tileNumber] = true;
-  revealAdjacentTiles(tileNumber);
   checkAvailableTiles();
+  currentTile.value = null;
 }
 
 function applyReward(effect) {
@@ -260,13 +297,16 @@ function collectMonsterLoot(tileNumber) {
 }
 
 function checkAvailableTiles() {
+  let availableTileFound = false;
   for (let i = 1; i <= 9; i++) {
     if (isAvailableTile(i) && !rewardsCollected[i]) {
-      return; // Il y a encore des tuiles disponibles
+      availableTileFound = true;
+      break;
     }
   }
-  // Si aucune tuile n'est disponible, activez le bouton "Continuer"
-  lastTileCompleted.value = true;
+  if (!availableTileFound) {
+    lastTileCompleted.value = true;
+  }
 }
 
 function formatReward(reward) {
@@ -284,14 +324,15 @@ function goToNextRoom() {
 }
 
 function getRandomTileType(difficulty) {
-  const types = ['monster', 'reward', 'empty', 'beneficial', 'trap', 'merchant'];
+  const types = ['monster', 'reward', 'empty', 'beneficial', 'trap', 'merchant', 'lore'];
   const weights = [
     0.2 + difficulty * 0.2,  // monster
     0.2 - difficulty * 0.1,  // reward
     0.2 - difficulty * 0.1,  // empty
     0.2 - difficulty * 0.1,  // beneficial
     0.1 + difficulty * 0.1,  // trap
-    0.1                      // merchant (constant)
+    0.1,                      // merchant (constant)
+    0.1                       // lore (constant)
   ];
 
   const random = Math.random();
@@ -340,6 +381,43 @@ function revealAdjacentTiles(tileNumber) {
   if (bottomTile <= 9) {
     revealedTiles.value.push(bottomTile);
   }
+}
+
+function handleLoreTile(tileNumber) {
+  const lore = dungeonLore.value[currentLoreIndex.value];
+  store.commit('ADD_LOG_MESSAGE', lore);
+  currentLoreIndex.value = (currentLoreIndex.value + 1) % dungeonLore.value.length;
+  completeTile(tileNumber);
+}
+
+function handleMerchantTile(tileNumber) {
+  const tile = tileContent(tileNumber);
+  const lore = dungeonLore.value[currentLoreIndex.value];
+  store.commit('ADD_LOG_MESSAGE', `Le marchand murmure : "${lore}"`);
+  currentLoreIndex.value = (currentLoreIndex.value + 1) % dungeonLore.value.length;
+  
+  store.commit('SET_MERCHANT_CHOICES', tile.choices);
+  store.commit('SET_CURRENT_MERCHANT_TILE', tileNumber);
+}
+
+function buyMerchantItem(tileNumber, choice) {
+  if (store.state.character.gold >= choice.cost && !choice.purchased) {
+    store.commit('UPDATE_STAT', { stat: 'gold', value: -choice.cost });
+    store.dispatch('applyReward', choice.effect);
+    
+    // Marquer le choix comme acheté
+    choice.purchased = true;
+  }
+}
+
+function getRandomLore() {
+  return dungeonLore.value[Math.floor(Math.random() * dungeonLore.value.length)];
+}
+
+function completeMerchantTile(tileNumber) {
+  rewardsCollected[tileNumber] = true;
+  revealAdjacentTiles(tileNumber);
+  store.commit('SET_CURRENT_MERCHANT_TILE', null);
 }
 
 </script>
@@ -505,5 +583,63 @@ button:disabled {
   opacity: 0.7;
   cursor: default;
 }
+
+.merchant-choices {
+  margin-top: 1rem;
+}
+
+.merchant-choices button {
+  display: block;
+  width: 100%;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  background-color: var(--color-accent);
+  color: var(--color-text);
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: opacity 0.3s;
+}
+
+.merchant-choices button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.merchant-choices button:not(:disabled):hover {
+  opacity: 0.8;
+}
+
+.merchant-lore {
+  font-style: italic;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+}
+
+.continue-button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.5rem;
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: opacity 0.3s;
+}
+
+.continue-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.continue-button:not(:disabled):hover {
+  opacity: 0.8;
+}
 </style>
+
+
 

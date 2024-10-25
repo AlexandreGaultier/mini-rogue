@@ -22,7 +22,7 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import Chamber from '../components/Chamber.vue';
@@ -51,6 +51,23 @@ watch(() => character.value.hp, (newHp) => {
   if (newHp <= 0) {
     store.dispatch('resetCharacter');
     router.push('/game-over');
+  }
+});
+
+let audio;
+
+onMounted(async () => {
+  const audioModule = await import('../assets/music/background1.mp3');
+  audio = new Audio(audioModule.default);
+  audio.loop = true;
+  audio.volume = 0.3;
+  audio.play();
+});
+
+onUnmounted(() => {
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0;
   }
 });
 
