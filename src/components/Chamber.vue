@@ -424,30 +424,37 @@ function completeMerchantTile(tileNumber) {
 <style scoped>
 .chamber {
   margin-bottom: 1rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-accent) var(--color-dark-gray);
 }
 
 .tiles-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
+  gap: 1rem;
   margin-bottom: 1rem;
+  flex-grow: 1;
 }
 
 .tile {
   background-color: var(--color-dark-gray);
   border: 1px solid var(--color-accent);
-  border-radius: 0.25rem;
-  padding: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0.8rem; /* Réduit le padding */
   text-align: center;
   cursor: pointer;
   transition: background-color 0.3s;
-  min-height: 80px;
+  min-height: 110px; /* Réduit la hauteur minimale */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   opacity: 0.5;
-  font-size: 0.7rem;
+  font-size: 0.85rem; /* Réduit la taille de la police */
 }
 
 .tile.available {
@@ -457,7 +464,7 @@ function completeMerchantTile(tileNumber) {
 
 .tile.current {
   border: 2px solid var(--color-primary);
-  box-shadow: 0 0 5px var(--color-primary);
+  box-shadow: 0 0 10px var(--color-primary);
 }
 
 .tile:hover.available {
@@ -465,42 +472,41 @@ function completeMerchantTile(tileNumber) {
 }
 
 h3 {
-  margin: 0;
+  margin: 0 0 0.5rem 0;
   color: var(--color-primary);
-  font-size: 0.9rem;
+  font-size: 1rem; /* Réduit la taille du titre */
 }
 
 .tile-details {
   margin-top: 0.5rem;
-  font-size: 0.7rem;
+  font-size: 0.85rem; /* Réduit la taille de la police */
 }
 
 .immediate-reward {
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .roll-rewards {
   list-style-type: none;
   padding: 0;
-  margin: 0;
+  margin: 0.5rem 0 0 0;
   text-align: left;
-  font-size: 0.65rem;
-  margin-top: 0.25rem;
+  font-size: 0.8rem; /* Réduit la taille de la police */
 }
 
 .roll-rewards li {
-  margin-bottom: 0.1rem;
+  margin-bottom: 0.3rem;
 }
 
 button {
   margin-top: 0.5rem;
-  padding: 0.25rem 0.5rem;
+  padding: 0.4rem 0.8rem; /* Réduit le padding */
   background-color: var(--color-accent);
   color: var(--color-text);
   border: none;
-  border-radius: 0.15rem;
+  border-radius: 0.25rem;
   cursor: pointer;
-  font-size: 0.75rem;
+  font-size: 0.85rem; /* Réduit la taille de la police */
 }
 
 button:disabled {
@@ -509,51 +515,22 @@ button:disabled {
 }
 
 .dice-result {
-  margin-top: 0.25rem;
+  margin-top: 0.5rem;
   font-weight: bold;
   color: var(--color-accent);
-  font-size: 0.75rem;
-}
-
-.potion-notification {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  z-index: 1000;
-}
-
-.potion-offer {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: var(--color-background);
-  border: 2px solid var(--color-border);
-  padding: 20px;
-  border-radius: 10px;
-  z-index: 1000;
-  text-align: center;
-}
-
-.potion-offer button {
-  margin: 10px;
-  padding: 5px 10px;
-  cursor: pointer;
+  font-size: 0.85rem; /* Réduit la taille de la police */
 }
 
 .continue-button {
   margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  padding: 0.6rem 1.2rem; /* Réduit le padding */
+  font-size: 1rem; /* Réduit la taille de la police */
   background-color: var(--color-accent);
   color: white;
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
+  align-self: center;
 }
 
 .tile.completed {
@@ -579,11 +556,6 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.tile.completed {
-  opacity: 0.7;
-  cursor: default;
-}
-
 .merchant-choices {
   margin-top: 1rem;
 }
@@ -591,55 +563,46 @@ button:disabled {
 .merchant-choices button {
   display: block;
   width: 100%;
-  margin: 0.5rem 0;
-  padding: 0.5rem;
+  margin: 0.5rem 0; /* Réduit la marge */
+  padding: 0.6rem; /* Réduit le padding */
   background-color: var(--color-accent);
   color: var(--color-text);
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.9rem; /* Réduit la taille de la police */
   transition: opacity 0.3s;
-}
-
-.merchant-choices button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.merchant-choices button:not(:disabled):hover {
-  opacity: 0.8;
 }
 
 .merchant-lore {
   font-style: italic;
   margin-bottom: 1rem;
-  font-size: 0.9rem;
+  font-size: 0.9rem; /* Réduit la taille de la police */
   color: var(--color-text-secondary);
 }
 
-.continue-button {
-  margin-top: 1rem;
-  width: 100%;
-  padding: 0.5rem;
-  background-color: var(--color-primary);
-  color: var(--color-text);
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: opacity 0.3s;
-}
+/* Styles pour les écrans plus grands */
+@media (min-width: 768px) {
+  .tile {
+    font-size: 0.95rem;
+    min-height: 140px;
+  }
 
-.continue-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+  h3 {
+    font-size: 1.2rem;
+  }
 
-.continue-button:not(:disabled):hover {
-  opacity: 0.8;
+  .tile-details, .roll-rewards, button, .dice-result {
+    font-size: 0.95rem;
+  }
+
+  .continue-button {
+    font-size: 1.1rem;
+  }
 }
 </style>
+
+
 
 
 

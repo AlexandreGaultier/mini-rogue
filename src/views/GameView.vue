@@ -7,17 +7,12 @@
           :currentLevel="currentLevel" 
           :currentChamber="currentChamber"
         />
-        <MonsterHealthBar 
-          :monsterName="currentMonster.name"
-          :currentHealth="currentMonster.currentHealth"
-          :maxHealth="currentMonster.maxHealth"
-        />
+        <CharacterBoard :character="character" />
       </div>
       <div class="main-panel">
         <Chamber :chamberNumber="currentChamber" @chamber-completed="nextChamber" />
       </div>
     </div>
-    <CharacterBoard :character="currentCharacter" />
   </div>
 </template>
 
@@ -29,7 +24,6 @@ import Chamber from '../components/Chamber.vue';
 import CharacterBoard from '../components/CharacterBoard.vue';
 import DungeonTree from '../components/DungeonTree.vue';
 import gameData from '../data/game-data.json';
-import MonsterHealthBar from '../components/MonsterHealthBar.vue';
 
 const store = useStore();
 const router = useRouter();
@@ -37,14 +31,6 @@ const router = useRouter();
 const dungeon = computed(() => store.state.dungeon);
 const currentLevel = ref(1);
 const currentChamber = ref(1);
-const currentCharacter = ref(gameData.characters[0]); // Sélectionne le premier personnage par défaut
-
-const currentMonster = ref({
-  name: "Gobelin",
-  currentHealth: 20,
-  maxHealth: 30
-});
-
 const character = computed(() => store.state.character);
 
 watch(() => character.value.hp, (newHp) => {
@@ -76,12 +62,10 @@ function nextChamber() {
   if (currentChamber.value < currentFloor.rooms.length) {
     currentChamber.value++;
   } else {
-    // Passer au niveau suivant
     if (currentLevel.value < gameData.dungeon.floors.length) {
       currentLevel.value++;
       currentChamber.value = 1;
     } else {
-      // Le donjon est terminé
       alert("Félicitations ! Vous avez terminé le donjon !");
     }
   }
@@ -91,34 +75,40 @@ function nextChamber() {
 <style scoped>
 .game-view {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100vh;
   background-color: var(--color-background);
+  overflow: hidden;
 }
 
 .game-board {
   display: flex;
-  gap: 20px;
-  max-width: 1800px;
   width: 100%;
-  margin-bottom: 20px;
+  height: calc(100vh - 6rem);
 }
 
 .left-panel {
-  flex: 1;
+  width: 300px;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  max-width: 300px;
+  padding: 20px;
+  overflow-y: auto;
 }
 
 .main-panel {
-  flex: 3;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  height: 100%;
+}
+
+:deep(.chamber) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 :deep(.dungeon-tree),
-:deep(.monster-health-bar),
 :deep(.chamber),
 :deep(.character-board) {
   background-color: var(--color-dark-gray);
@@ -129,61 +119,9 @@ function nextChamber() {
 }
 
 :deep(.dungeon-tree):hover,
-:deep(.monster-health-bar):hover,
 :deep(.chamber):hover,
 :deep(.character-board):hover {
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-2px);
-}
-
-:deep(.character-board) {
-  width: 100%;
-  max-width: 1400px;
-  display: flex;
-  flex-direction: column; /* Changé de grid à flex avec direction column */
-  gap: 20px;
-}
-
-:deep(.gauge) {
-  height: 25px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 12.5px;
-  overflow: hidden;
-  position: relative;
-}
-
-:deep(.gauge-points) {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  padding: 0 5px;
-}
-
-:deep(.point) {
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  margin: 0 2px;
-  transition: all 0.3s ease;
-}
-
-:deep(.point.filled) {
-  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-}
-
-:deep(.exp-gauge .point.filled) { background-color: #64B5F6; }
-:deep(.hp-gauge .point.filled) { background-color: #EF5350; }
-:deep(.armor-gauge .point.filled) { background-color: #90A4AE; }
-:deep(.gold-gauge .point.filled) { background-color: #FFD54F; }
-:deep(.rations-gauge .point.filled) { background-color: #8D6E63; }
-
-:deep(.potion-indicator .point) {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-:deep(.potion-indicator .point.filled) {
-  box-shadow: 0 0 10px currentColor;
 }
 </style>
