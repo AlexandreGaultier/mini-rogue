@@ -1,17 +1,23 @@
 <template>
   <div class="chamber">
+    <!-- Grille des tuiles -->
     <div class="tiles-grid">
+      <!-- Boucle sur les 9 tuiles de la chambre -->
       <div v-for="i in 9" :key="i" class="tile" 
            :class="{ 'current': currentTile === i, 'available': isAvailableTile(i), 'completed': rewardsCollected[i], 'revealed': tileRevealed(i) }" 
            @click="selectTile(i)">
+        <!-- Contenu de la tuile -->
         <template v-if="tileContent(i)">
           <h3>{{ tileContent(i).name }}</h3>
+          <!-- Affichage des détails de la tuile si elle est disponible ou sélectionnée -->
           <template v-if="isAvailableTile(i) || currentTile === i">
             <p>{{ tileContent(i).description }}</p>
+            <!-- Affichage spécifique pour les monstres -->
             <template v-if="tileContent(i).type === 'monster'">
               <p>Vie: {{ tileContent(i).health }}</p>
               <p>Dégâts: {{ tileContent(i).damage }}</p>
             </template>
+            <!-- Affichage pour les récompenses, bénéfices et pièges -->
             <template v-if="['reward', 'beneficial', 'trap'].includes(tileContent(i).type)">
               <p class="immediate-reward">{{ tileContent(i).immediateReward?.text || '' }}</p>
               <ul class="roll-rewards" v-if="tileContent(i).rollRewards">
@@ -20,11 +26,14 @@
                 </li>
               </ul>
             </template>
+            <!-- Affichage spécifique pour les pièges sans récompense immédiate -->
             <template v-if="tileContent(i).type === 'trap' && !tileContent(i).immediateReward">
               <p>Dégâts : {{ -(tileContent(i).effect?.hp || 0) }} PV</p>
             </template>
           </template>
+          <!-- Interactions spécifiques pour la tuile sélectionnée -->
           <template v-if="currentTile === i">
+            <!-- Mécanisme de lancer de dés -->
             <template v-if="['DiceRoll2', 'DiceRoll3', 'DiceRoll6'].includes(tileContent(i).mechanism)">
               <div v-if="currentTile === i" class="tile-details">
                 <button v-if="!diceResults[i]" @click.stop="rollDice(i)" :disabled="diceRolling[i]">
@@ -39,11 +48,13 @@
                 </template>
               </div>
             </template>
+            <!-- Mécanisme de récompense immédiate -->
             <template v-else-if="tileContent(i).mechanism === 'ImmediateReward'">
               <button @click="handleImmediateReward(i)" :disabled="rewardsCollected[i]">
                 Collecter la récompense
               </button>
             </template>
+            <!-- Gestion des combats contre les monstres -->
             <template v-else-if="tileContent(i).type === 'monster'">
               <template v-if="currentTile === i && !rewardsCollected[i] && !pendingLoot">
                 <MonsterFight 
@@ -59,6 +70,7 @@
                 </button>
               </template>
             </template>
+            <!-- Gestion des tuiles vides et des pièges -->
             <template v-else-if="['empty', 'trap'].includes(tileContent(i).type)">
               <button @click="interactWithTile(i)" :disabled="rewardsCollected[i]">
                 {{ rewardsCollected[i] ? 'Continuer' : 'Interagir' }}
@@ -66,74 +78,80 @@
             </template>
           </template>
         </template>
+        <!-- Gestion spécifique des marchands -->
         <template v-if="currentTile === i && tileContent(i) && tileContent(i).type === 'merchant'">
           <div class="merchant-choices">
-            <p class="merchant-lore">{{ getRandomLore() }}</p>
-            <h4>Objets à vendre :</h4>
-            <button 
-              v-for="(choice, index) in tileContent(i).choices" 
-              :key="index"
-              @click="buyMerchantItem(i, choice)"
-              :disabled="store.state.character.gold < choice.cost || choice.purchased"
-            >
-              {{ choice.text }} ({{ choice.cost }} or)
-            </button>
-            <button @click="interactWithTile(i)" class="continue-button" :disabled="rewardsCollected[i]">
-              Poursuivre sa route
-            </button>
+            <template v-if="!merchantInteractionCompleted[i]">
+              <p class="merchant-lore">{{ getRandomLore() }}</p>
+              <h4>Objets à vendre :</h4>
+              <button 
+                v-for="(choice, index) in tileContent(i).choices" 
+                :key="index"
+                @click="buyMerchantItem(i, choice)"
+                :disabled="store.state.character.gold < choice.cost || choice.purchased"
+              >
+                {{ choice.text }} ({{ choice.cost }} or)
+              </button>
+              <button @click="completeMerchantTile(i)" class="continue-button">
+                Poursuivre sa route
+              </button>
+            </template>
+            <template v-else>
+              <p>Vous avez terminé vos affaires avec ce marchand.</p>
+            </template>
           </div>
         </template>
       </div>
     </div>
+    <!-- Bouton pour passer à la salle suivante -->
     <button v-if="lastTileCompleted" @click="goToNextRoom" class="continue-button">
       Continuer
     </button>
-    <div v-if="store.state.currentMerchantTile === i" class="merchant-choices">
-      <h4>Objets à vendre :</h4>
-      <button 
-        v-for="choice in store.state.merchantChoices" 
-        :key="choice.text"
-        @click="buyMerchantItem(choice)"
-        :disabled="store.state.character.gold < choice.cost"
-      >
-        {{ choice.text }} ({{ choice.cost }} or)
-      </button>
-    </div>
   </div>
 </template>
 
 <script setup>
+// Importations nécessaires
 import { ref, reactive, computed, onMounted } from 'vue';
 import { useStore } from 'vuex';
 import gameData from '../data/game-data.json';
 import MonsterFight from './MonsterFight.vue';
 
+// Initialisation du store Vuex
 const store = useStore();
+
+// Computed properties pour accéder à l'état du store
 const potionOffer = computed(() => store.state.potionOffer);
 const pendingLoot = computed(() => store.state.pendingLoot);
+const currentFloor = computed(() => store.state.currentFloor);
+const currentRoom = computed(() => store.state.currentRoom);
+const dungeon = computed(() => store.state.dungeon);
 
+// État local réactif
 const revealedTiles = ref([1]);
 const diceResults = reactive({});
 const diceRolling = reactive({});
 const rewardsCollected = reactive({});
 const currentTile = ref(1);
-
 const tiles = ref([]);
 
-const currentFloor = computed(() => store.state.currentFloor);
-const currentRoom = computed(() => store.state.currentRoom);
-const dungeon = computed(() => store.state.dungeon);
+// Ajoutez ceci avec les autres états réactifs
+const merchantInteractionCompleted = reactive({});
 
+// Computed property pour vérifier si la dernière tuile est complétée
 const lastTileCompleted = computed(() => rewardsCollected[9] === true);
 
+// Données du donjon
 const dungeonLore = ref(gameData.dungeonLore);
 const currentLoreIndex = ref(0);
 
+// Initialisation au montage du composant
 onMounted(() => {
   initializeTiles();
   selectTile(1);
 });
 
+// Fonctions d'initialisation et de gestion générale des tuiles
 function initializeTiles() {
   const currentFloorIndex = dungeon.value.floors.findIndex(floor => floor.level === currentFloor.value);
   const difficulty = (currentFloorIndex + 1) / dungeon.value.floors.length;
@@ -143,11 +161,13 @@ function initializeTiles() {
     return getTileContent(tileType, difficulty);
   });
 
+  // Réinitialisation des états
   revealedTiles.value = [1];
   currentTile.value = 1;
   Object.keys(diceResults).forEach(key => delete diceResults[key]);
   Object.keys(diceRolling).forEach(key => delete diceRolling[key]);
   Object.keys(rewardsCollected).forEach(key => delete rewardsCollected[key]);
+  Object.keys(merchantInteractionCompleted).forEach(key => delete merchantInteractionCompleted[key]);
 }
 
 function tileContent(tileNumber) {
@@ -187,6 +207,32 @@ function selectTile(tileNumber) {
   }
 }
 
+function revealAdjacentTiles(tileNumber) {
+  const rightTile = tileNumber + 1;
+  const bottomTile = tileNumber + 3;
+  
+  if (rightTile <= 9 && rightTile % 3 !== 1) {
+    revealedTiles.value.push(rightTile);
+  }
+  if (bottomTile <= 9) {
+    revealedTiles.value.push(bottomTile);
+  }
+}
+
+function checkAvailableTiles() {
+  let availableTileFound = false;
+  for (let i = 1; i <= 9; i++) {
+    if (isAvailableTile(i) && !rewardsCollected[i]) {
+      availableTileFound = true;
+      break;
+    }
+  }
+  if (!availableTileFound) {
+    lastTileCompleted.value = true;
+  }
+}
+
+// Fonctions de gestion des mécanismes de jeu
 function rollDice(tileNumber) {
   const tile = tileContent(tileNumber);
   const faces = tile.mechanism === 'DiceRoll2' ? 2 : 
@@ -222,7 +268,11 @@ function interactWithTile(tileNumber) {
   if (tile.type === 'lore') {
     handleLoreTile(tileNumber);
   } else if (tile.type === 'merchant') {
-    completeTile(tileNumber);
+    if (!merchantInteractionCompleted[tileNumber]) {
+      handleMerchantTile(tileNumber);
+    } else {
+      completeTile(tileNumber);
+    }
   } else {
     if (tile.immediateReward) {
       applyReward(tile.immediateReward.effect);
@@ -260,6 +310,7 @@ function checkLastTileCompleted() {
   }
 }
 
+// Fonctions de gestion des combats
 function onCombatEnded(playerWon) {
   if (playerWon) {
     const monster = tileContent(currentTile.value);
@@ -296,19 +347,7 @@ function collectMonsterLoot(tileNumber) {
   }
 }
 
-function checkAvailableTiles() {
-  let availableTileFound = false;
-  for (let i = 1; i <= 9; i++) {
-    if (isAvailableTile(i) && !rewardsCollected[i]) {
-      availableTileFound = true;
-      break;
-    }
-  }
-  if (!availableTileFound) {
-    lastTileCompleted.value = true;
-  }
-}
-
+// Fonctions utilitaires
 function formatReward(reward) {
   if (!reward) return 'Aucun butin';
   let rewardText = [];
@@ -371,18 +410,7 @@ function getRandomMonster(difficulty) {
     : null;
 }
 
-function revealAdjacentTiles(tileNumber) {
-  const rightTile = tileNumber + 1;
-  const bottomTile = tileNumber + 3;
-  
-  if (rightTile <= 9 && rightTile % 3 !== 1) {
-    revealedTiles.value.push(rightTile);
-  }
-  if (bottomTile <= 9) {
-    revealedTiles.value.push(bottomTile);
-  }
-}
-
+// Fonctions spécifiques aux types de tuiles
 function handleLoreTile(tileNumber) {
   const lore = dungeonLore.value[currentLoreIndex.value];
   store.commit('ADD_LOG_MESSAGE', lore);
@@ -416,11 +444,12 @@ function getRandomLore() {
 
 function completeMerchantTile(tileNumber) {
   rewardsCollected[tileNumber] = true;
+  merchantInteractionCompleted[tileNumber] = true;
   revealAdjacentTiles(tileNumber);
   store.commit('SET_CURRENT_MERCHANT_TILE', null);
 }
-
 </script>
+
 <style scoped>
 .chamber {
   margin-bottom: 1rem;
@@ -601,9 +630,6 @@ button:disabled {
   }
 }
 </style>
-
-
-
 
 
 
