@@ -53,7 +53,7 @@
 </template>
 
 <script setup>
-import { ref, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import gameData from '../data/game-data.json';
@@ -64,7 +64,7 @@ const router = useRouter();
 const characters = ref(gameData.characters);
 const dungeons = ref(gameData.dungeons);
 const selectedCharacter = ref(null);
-const selectedDungeon = ref(null);
+const selectedDungeon = ref(dungeons.value[0]); // Sélectionne le premier donjon par défaut
 const gameStarted = ref(false);
 const showLorePopup = ref(false);
 const currentLoreItem = ref(null);
@@ -118,6 +118,13 @@ async function startAudio() {
     console.error('Erreur lors de la lecture audio:', error);
   }
 }
+
+onMounted(() => {
+  // Sélectionne un personnage aléatoire parmi ceux qui ne sont pas désactivés
+  const availableCharacters = characters.value.filter((_, index) => index < 4);
+  const randomIndex = Math.floor(Math.random() * availableCharacters.length);
+  selectedCharacter.value = availableCharacters[randomIndex];
+});
 
 onUnmounted(() => {
   if (audio) {
@@ -418,3 +425,4 @@ button:disabled {
   align-items: center;
 }
 </style>
+
