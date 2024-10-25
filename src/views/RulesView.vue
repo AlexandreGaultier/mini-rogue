@@ -111,6 +111,7 @@ h1 {
   background-color: var(--color-dark-gray);
   border-radius: 10px;
   padding: 1.5rem;
+  text-align: start;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;
