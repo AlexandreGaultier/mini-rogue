@@ -248,7 +248,7 @@
       "type": "trap",
       "difficulty": 3,
       "mechanism": "DiceRoll2",
-      "description": "Votre reflet vous attaque : -2 PV",
+      "description": "Un large miroir dans un coin de la pièce réfléchit votre image, mais une aura de malveillance vous entoure.",
       "effect": { "hp": -2 },
       "rollRewards": {
         "1": {
@@ -433,7 +433,6 @@
       "difficulty": 5,
       "mechanism": "DiceRoll2",
       "description": "Le sol s'effondre sous vos pieds, vous précipitant dans une fosse grouillante de serpents venimeux.",
-      "effect": { "hp": -5, "armor": -1 },
       "rollRewards": {
         "1": {
           "text": "Échappez aux serpents : +5 exp, +1 potion offensive",
@@ -472,7 +471,6 @@
       "difficulty": 3,
       "mechanism": "DiceRoll2",
       "description": "Des rangées de petites tombes s'étendent devant vous, chacune portant le nom d'un aventurier tombé.",
-      "effect": { "hp": -3, "exp": 2 },
       "rollRewards": {
         "1": {
           "text": "Hommage aux héros déchus : +4 exp",

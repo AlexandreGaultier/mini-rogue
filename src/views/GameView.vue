@@ -49,6 +49,7 @@ const character = computed(() => store.state.character);
 
 watch(() => character.value.hp, (newHp) => {
   if (newHp <= 0) {
+    store.dispatch('resetCharacter');
     router.push('/game-over');
   }
 });

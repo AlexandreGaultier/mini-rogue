@@ -12,7 +12,7 @@
               <p>Vie: {{ tileContent(i).health }}</p>
               <p>Dégâts: {{ tileContent(i).damage }}</p>
             </template>
-            <template v-if="['reward', 'beneficial'].includes(tileContent(i).type)">
+            <template v-if="['reward', 'beneficial', 'trap'].includes(tileContent(i).type)">
               <p class="immediate-reward">{{ tileContent(i).immediateReward?.text || '' }}</p>
               <ul class="roll-rewards" v-if="tileContent(i).rollRewards">
                 <li v-for="(reward, roll) in tileContent(i).rollRewards" :key="roll">
@@ -161,6 +161,12 @@ function rollDice(tileNumber) {
   const faces = tile.mechanism === 'DiceRoll2' ? 2 : 
                 tile.mechanism === 'DiceRoll3' ? 3 : 6;
   diceRolling[tileNumber] = true;
+
+  // Appliquer l'effet immédiat s'il existe
+  if (tile.immediateReward && tile.immediateReward.effect) {
+    applyReward(tile.immediateReward.effect);
+  }
+
   setTimeout(() => {
     diceResults[tileNumber] = Math.floor(Math.random() * faces) + 1;
     diceRolling[tileNumber] = false;
@@ -188,17 +194,26 @@ function handleImmediateReward(tileNumber) {
 
 function interactWithTile(tileNumber) {
   const tile = tileContent(tileNumber);
-  switch (tile.mechanism) {
-    case 'DiceRoll2':
-    case 'DiceRoll3':
-    case 'DiceRoll6':
-      rollDice(tileNumber);
-      break;
-    case 'ImmediateReward':
-      handleImmediateReward(tileNumber);
-      break;
-    default:
-      console.warn(`Mécanisme de tuile non géré: ${tile.mechanism}`);
+  if (tile.immediateReward) {
+    applyReward(tile.immediateReward.effect);
+  }
+  if (tile.mechanism === 'ImmediateReward') {
+    applyReward(tile.effect);
+  }
+  rewardsCollected[tileNumber] = true;
+  revealAdjacentTiles(tileNumber);
+  checkAvailableTiles();
+}
+
+function applyReward(effect) {
+  if (effect) {
+    Object.entries(effect).forEach(([stat, value]) => {
+      if (stat === 'offensivePotion' || stat === 'defensivePotion') {
+        store.commit('ADD_POTION', { type: stat, amount: value === 'random' ? 1 : value });
+      } else {
+        store.commit('UPDATE_STAT', { stat, value });
+      }
+    });
   }
 }
 

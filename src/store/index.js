@@ -21,12 +21,20 @@ export default createStore({
   },
   mutations: {
     UPDATE_STAT(state, { stat, value }) {
-      if (stat in state.character) {
-        const maxValue = getMaxValue(stat);
-        const newValue = Number(state.character[stat]) + Number(value);
-        state.character[stat] = Math.max(0, Math.min(newValue, maxValue));
+      const currentValue = state.character[stat];
+      const maxValue = state.character[`max${stat.charAt(0).toUpperCase() + stat.slice(1)}`] || Infinity;
+      
+      if (stat === 'exp') {
+        // Si l'exp descend en dessous de 0, on la laisse à 0 et on applique le reste à hp
+        if (currentValue + value < 0) {
+          const overflow = currentValue + value;
+          state.character.exp = 0;
+          state.character.hp = Math.min(state.character.hp - overflow, state.character.maxHp);
+        } else {
+          state.character.exp = Math.min(currentValue + value, maxValue);
+        }
       } else {
-        console.error(`Statistique non reconnue: ${stat}`);
+        state.character[stat] = Math.max(0, Math.min(currentValue + value, maxValue));
       }
     },
     SET_POTION(state, { type, potion }) {
@@ -103,6 +111,18 @@ export default createStore({
     },
     setMonsterLoot({ commit }, loot) {
       commit('SET_PENDING_LOOT', loot);
+    },
+    resetCharacter({ commit, state }) {
+      const initialStats = {
+        hp: state.character.maxHp,
+        exp: 0,
+        gold: 5,
+        armor: 0,
+        rations: 3
+      };
+      Object.entries(initialStats).forEach(([stat, value]) => {
+        commit('UPDATE_STAT', { stat, value });
+      });
     }
   },
   getters: {
