@@ -78,7 +78,7 @@
             >
               {{ choice.text }} ({{ choice.cost }} or)
             </button>
-            <button @click="interactWithTile(i)" class="continue-button">
+            <button @click="interactWithTile(i)" class="continue-button" :disabled="rewardsCollected[i]">
               Poursuivre sa route
             </button>
           </div>
@@ -222,7 +222,7 @@ function interactWithTile(tileNumber) {
   if (tile.type === 'lore') {
     handleLoreTile(tileNumber);
   } else if (tile.type === 'merchant') {
-    completeMerchantTile(tileNumber);
+    completeTile(tileNumber);
   } else {
     if (tile.immediateReward) {
       applyReward(tile.immediateReward.effect);
@@ -233,7 +233,6 @@ function interactWithTile(tileNumber) {
     completeTile(tileNumber);
   }
   checkAvailableTiles();
-  currentTile.value = null;
 }
 
 function applyReward(effect) {
@@ -252,6 +251,7 @@ function completeTile(tileNumber) {
   rewardsCollected[tileNumber] = true;
   revealAdjacentTiles(tileNumber);
   checkLastTileCompleted();
+  checkAvailableTiles();
 }
 
 function checkLastTileCompleted() {
@@ -601,6 +601,8 @@ button:disabled {
   }
 }
 </style>
+
+
 
 
 
