@@ -5,9 +5,12 @@
       <p class="start-prompt">Cliquez pour commencer</p>
     </div>
     <div class="game-content">
+      <div class="buttons-container">
       <button @click="startAdventure" :disabled="!selectedCharacter || !selectedDungeon">
-        Commencer l'aventure
-      </button>
+        Entrer dans le donjon
+        </button>
+        <button @click="goToRules" class="rules-button">Comment jouer ?</button>
+      </div>
       <div class="sections-container">
         <div class="characters-section">
           <h2>Choisissez votre héros</h2>
@@ -119,6 +122,10 @@ async function startAudio() {
   }
 }
 
+function goToRules() {
+  router.push('/rules');
+}
+
 onMounted(() => {
   // Sélectionne un personnage aléatoire parmi ceux qui ne sont pas désactivés
   const availableCharacters = characters.value.filter((_, index) => index < 4);
@@ -195,6 +202,12 @@ onUnmounted(() => {
   align-items: center;
   min-height: 100vh; /* Utilise min-height au lieu de height */
   overflow-y: auto; /* Permet le défilement vertical si nécessaire */
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
 }
 
 .sections-container {
@@ -424,5 +437,13 @@ button:disabled {
   justify-content: center;
   align-items: center;
 }
-</style>
 
+.rules-button {
+  margin-top: 1rem;
+  background-color: #ffffff3b;
+}
+
+.rules-button:hover {
+  background-color: #ffffff6b;
+}
+</style>
