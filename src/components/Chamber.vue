@@ -20,7 +20,7 @@
                 </li>
               </ul>
             </template>
-            <template v-if="tileContent(i).type === 'trap'">
+            <template v-if="tileContent(i).type === 'trap' && !tileContent(i).immediateReward">
               <p>Dégâts : {{ -(tileContent(i).effect?.hp || 0) }} PV</p>
             </template>
           </template>
@@ -161,12 +161,6 @@ function rollDice(tileNumber) {
   const faces = tile.mechanism === 'DiceRoll2' ? 2 : 
                 tile.mechanism === 'DiceRoll3' ? 3 : 6;
   diceRolling[tileNumber] = true;
-
-  // Appliquer l'effet immédiat s'il existe
-  if (tile.immediateReward && tile.immediateReward.effect) {
-    applyReward(tile.immediateReward.effect);
-  }
-
   setTimeout(() => {
     diceResults[tileNumber] = Math.floor(Math.random() * faces) + 1;
     diceRolling[tileNumber] = false;

@@ -21,21 +21,17 @@ export default createStore({
   },
   mutations: {
     UPDATE_STAT(state, { stat, value }) {
+      const maxValues = {
+        hp: 20,
+        exp: 23,
+        armor: 4,
+        rations: 5,
+        gold: 10
+      };
       const currentValue = state.character[stat];
-      const maxValue = state.character[`max${stat.charAt(0).toUpperCase() + stat.slice(1)}`] || Infinity;
+      const maxValue = maxValues[stat];
       
-      if (stat === 'exp') {
-        // Si l'exp descend en dessous de 0, on la laisse à 0 et on applique le reste à hp
-        if (currentValue + value < 0) {
-          const overflow = currentValue + value;
-          state.character.exp = 0;
-          state.character.hp = Math.min(state.character.hp - overflow, state.character.maxHp);
-        } else {
-          state.character.exp = Math.min(currentValue + value, maxValue);
-        }
-      } else {
-        state.character[stat] = Math.max(0, Math.min(currentValue + value, maxValue));
-      }
+      state.character[stat] = Math.max(0, Math.min(currentValue + value, maxValue));
     },
     SET_POTION(state, { type, potion }) {
       state.character[type] = potion;
@@ -97,15 +93,15 @@ export default createStore({
     rejectPotionOffer({ commit }) {
       commit('SET_POTION_OFFER', null);
     },
-    nextRoom({ commit, state }) {
+    nextRoom({ commit, state, dispatch }) {
       const currentFloor = state.dungeon.floors.find(f => f.level === state.currentFloor);
       if (state.currentRoom < currentFloor.rooms.length) {
         commit('SET_CURRENT_ROOM', state.currentRoom + 1);
       } else if (state.currentFloor < state.dungeon.floors.length) {
         commit('SET_CURRENT_FLOOR', state.currentFloor + 1);
         commit('SET_CURRENT_ROOM', 1);
+        dispatch('consumeRation');
       } else {
-        // Donjon terminé
         console.log('Donjon terminé !');
       }
     },
@@ -123,6 +119,13 @@ export default createStore({
       Object.entries(initialStats).forEach(([stat, value]) => {
         commit('UPDATE_STAT', { stat, value });
       });
+    },
+    consumeRation({ commit, state }) {
+      if (state.character.rations > 0) {
+        commit('UPDATE_STAT', { stat: 'rations', value: -1 });
+      } else {
+        commit('UPDATE_STAT', { stat: 'hp', value: -3 });
+      }
     }
   },
   getters: {
@@ -135,14 +138,3 @@ export default createStore({
     currentFloorData: (state) => state.dungeon.floors.find(f => f.level === state.currentFloor),
   }
 });
-
-function getMaxValue(stat) {
-  const maxValues = {
-    hp: 20,
-    exp: 23,
-    armor: 4,
-    rations: 5,
-    gold: 10,
-  };
-  return maxValues[stat] || Infinity;
-}

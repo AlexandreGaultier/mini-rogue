@@ -313,7 +313,10 @@
       "difficulty": 2,
       "mechanism": "DiceRoll2",
       "description": "Des plantes aux couleurs vives et aux formes étranges emplissent la pièce. L'air est lourd de spores toxiques.",
-      "effect": { "hp": -2, "rations": -1 },
+      "immediateReward": {
+        "text": "Perdez 2 PV et 1 ration",
+        "effect": { "hp": -2, "rations": -1 }
+      },
       "rollRewards": {
         "1": {
           "text": "Trouvez un antidote : annule les effets négatifs",
@@ -467,7 +470,7 @@
     },
     {
       "name": "Cimetière miniature",
-      "type": "trap",
+      "type": "beneficial",
       "difficulty": 3,
       "mechanism": "DiceRoll2",
       "description": "Des rangées de petites tombes s'étendent devant vous, chacune portant le nom d'un aventurier tombé.",
