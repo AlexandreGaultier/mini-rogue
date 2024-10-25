@@ -5,37 +5,41 @@
       <p class="start-prompt">Cliquez pour commencer</p>
     </div>
     <div class="game-content">
-      <h2>Choisissez votre héros</h2>
-      <div class="characters">
-        <div v-for="character in characters" :key="character.id" 
-             class="character" 
-             :class="{ selected: selectedCharacter === character }"
-             @click="selectCharacter(character)">
-          <h3>{{ character.name }}</h3>
-          <p>PV: {{ character.hp }}/{{ character.maxHp }}</p>
-          <p>Armure: {{ character.armor }}</p>
-          <p>Or de départ: {{ character.gold }}</p>
-          <p>Rations de départ: {{ character.rations }}</p>
-          <button @click.stop="showLore(character)">Lire le lore</button>
-        </div>
-      </div>
-
-      <h2>Choisissez votre donjon</h2>
-      <div class="dungeons">
-        <div v-for="dungeon in dungeons" :key="dungeon.id"
-             class="dungeon"
-             :class="{ selected: selectedDungeon === dungeon }"
-             @click="selectDungeon(dungeon)">
-          <h3>{{ dungeon.name }}</h3>
-          <p>Difficulté: {{ dungeon.difficulty }}</p>
-          <p>Étages: {{ dungeon.floors.length }}</p>
-          <button @click.stop="showLore(dungeon, 'dungeon')">Lire le lore</button>
-        </div>
-      </div>
-
       <button @click="startAdventure" :disabled="!selectedCharacter || !selectedDungeon">
         Commencer l'aventure
       </button>
+      <div class="sections-container">
+        <div class="characters-section">
+          <h2>Choisissez votre héros</h2>
+          <div class="characters">
+            <div v-for="character in characters" :key="character.id" 
+                 class="character" 
+                 :class="{ selected: selectedCharacter === character }"
+                 @click="selectCharacter(character)">
+              <h3>{{ character.name }}</h3>
+              <p>PV: {{ character.hp }}/{{ character.maxHp }}</p>
+              <p>Armure: {{ character.armor }}</p>
+              <p>Or de départ: {{ character.gold }}</p>
+              <p>Rations de départ: {{ character.rations }}</p>
+              <button @click.stop="showLore(character)">Lire le lore</button>
+            </div>
+          </div>
+        </div>
+        <div class="dungeons-section">
+          <h2>Choisissez votre donjon</h2>
+          <div class="dungeons">
+            <div v-for="dungeon in dungeons" :key="dungeon.id"
+                 class="dungeon"
+                 :class="{ selected: selectedDungeon === dungeon }"
+                 @click="selectDungeon(dungeon)">
+              <h3>{{ dungeon.name }}</h3>
+              <p>Difficulté: {{ dungeon.difficulty }}</p>
+              <p>Étages: {{ dungeon.floors.length }}</p>
+              <button @click.stop="showLore(dungeon, 'dungeon')">Lire le lore</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div v-if="showLorePopup" class="lore-popup">
@@ -175,43 +179,144 @@ onUnmounted(() => {
 }
 
 .game-content {
-  padding-top: 2rem;
+  padding: 2rem;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-}
-
-.characters, .dungeons {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 30px;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh; /* Utilise min-height au lieu de height */
+  overflow-y: auto; /* Permet le défilement vertical si nécessaire */
 }
 
-.character, .dungeon {
-  background-color: var(--color-dark-gray);
-  border: 2px solid var(--color-accent);
-  border-radius: 8px;
-  padding: 15px;
+.sections-container {
+  display: flex;
+  flex-direction: column; /* Change en colonne */
+  width: 100%;
+  gap: 2rem; /* Ajoute un espace entre les sections */
+}
+
+.characters-section, .dungeons-section {
+  width: 100%; /* Prend toute la largeur */
+  overflow-y: visible; /* Supprime le défilement */
+}
+
+h2 {
+  font-size: 1.5rem; /* Réduit davantage la taille des titres h2 */
+  color: var(--color-text);
+  margin-bottom: 1rem;
+  text-align: center;
+  text-shadow: 0 0 0.2rem var(--color-text);
+}
+
+.characters {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, auto);
+  gap: 1rem;
+  width: 100%;
+}
+
+.character {
+  background-color: rgba(26, 26, 26, 0.8);
+  border-radius: 10px;
+  box-shadow: 0 0 0.1rem #ffffff3b;
+  padding: 1.5rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  opacity: 1;
+  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.character.selected, .dungeon.selected {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 10px var(--color-primary);
+.character:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 0.2rem #ffffff3b;
+}
+.character.selected {
+  border: 2px solid var(--color-accent);
+  box-shadow: 0 0 20px var(--color-accent);
+}
+
+.character:nth-child(n+5) {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.character:nth-child(n+5) button {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+.dungeons {
+  display: flex;
+  flex-direction: row;
+  gap: 0.8rem;
+}
+
+.dungeon {
+  background-color: rgba(26, 26, 26, 0.8);
+  border: none;
+  box-shadow: 0 0 0.1rem #ffffff3b;
+  border-radius: 10px;
+  padding: 1.5rem 0.6rem; /* Réduit le padding */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  aspect-ratio: 3 / 1.5; /* Réduit la hauteur */
+  font-size: 0.8rem; /* Réduit la taille de la police */
+  max-width: 300px; /* Limite la largeur maximale */
+  margin: 0 auto; /* Centre les donjons horizontalement */
+}
+
+.dungeon:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 0.2rem #ffffff3b;
+}
+
+.dungeon.selected {
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 0 20px var(--color-primary);
+}
+
+.dungeon h3 {
+  color: var(--color-primary);
+  font-size: 1rem; /* Réduit la taille du titre */
+  margin-bottom: 0.2rem;
+}
+
+.character h3, .dungeon h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.character p, .dungeon p {
+  margin-bottom: 0.3rem;
+  font-size: 0.9rem;
 }
 
 button {
-  padding: 10px 20px;
-  font-size: 18px;
-  background-color: var(--color-accent);
+  padding: 0.8rem 1.5rem;
+  font-size: 1rem;
+  background-color: var(--color-primary);
   color: var(--color-text);
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin-bottom: 20px;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+button:hover {
+  background-color: var(--color-secondary);
+  transform: translateY(-2px);
 }
 
 button:disabled {
@@ -231,6 +336,45 @@ button:disabled {
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+.character button, .dungeon button {
+  margin-top: auto;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  background-color: rgba(60, 60, 60, 0.8);
+  color: var(--color-text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.character button:hover, .dungeon button:hover {
+  background-color: rgba(80, 80, 80, 0.8);
+}
+
+.game-content > button {
+  margin-bottom: 1rem; /* Réduit l'espace sous le bouton */
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  background-color: var(--color-primary);
+  color: var(--color-text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: 100%; /* Le bouton prend toute la largeur */
+  max-width: 400px; /* Limite la largeur maximale */
+}
+
+.game-content > button:hover {
+  background-color: var(--color-secondary);
+}
+
+.game-content > button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .lore-popup {
@@ -272,17 +416,5 @@ button:disabled {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.character button {
-  margin-top: 10px;
-  padding: 5px 10px;
-  font-size: 14px;
-}
-
-.dungeon button {
-  margin-top: 10px;
-  padding: 5px 10px;
-  font-size: 14px;
 }
 </style>

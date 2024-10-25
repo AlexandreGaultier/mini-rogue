@@ -35,7 +35,7 @@ body {
 #container {
   font-family: 'Courier New', Courier, monospace;
   max-width: 2000px;
-  margin: 0 auto;
+  margin: 0 0;
 }
 
 header {
