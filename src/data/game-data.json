@@ -15,7 +15,8 @@
       "skills": [
         { "name": "Coup sournois", "usageType": "combat" },
         { "name": "Furtivité", "usageType": "chamber" }
-      ]
+      ],
+      "lore": "Né dans les bas-fonds de la cité, le Rogue a grandi dans l'ombre, volant pour survivre. Un jour, il déroba un artefact maudit à un puissant sorcier. Poursuivi par des visions cauchemardesques, il cherche désespérément à se débarrasser de cette malédiction dans les profondeurs des donjons, où la folie et la rédemption se côtoient."
     },
     {
       "id": 2,
@@ -32,13 +33,14 @@
       "skills": [
         { "name": "Boule de feu", "usageType": "combat" },
         { "name": "Barrière magique", "usageType": "chamber" }
-      ]
+      ],
+      "lore": "Jadis respecté à l'académie de magie, le Mage fut banni pour ses expériences interdites sur l'immortalité. Consumé par sa quête d'éternité, il erre maintenant dans les donjons, cherchant des secrets anciens et sacrifiant tout sur l'autel de son obsession. Son esprit vacille entre génie et folie, tandis que son corps se consume lentement par sa magie corrompue."
     },
     {
       "id": 3,
       "name": "Prêtresse",
       "hp": 13,
-      "maxHp": 13,
+      "maxHp": 20,
       "gold": 2,
       "rations": 3,
       "armor": 0,
@@ -48,14 +50,15 @@
       "defensivePotion": null,
       "skills": [
         { "name": "Soin divin", "usageType": "combat" },
-        { "name": "Protection sacrée", "usageType": "chamber" }
-      ]
+        { "name": "Bénédiction", "usageType": "chamber" }
+      ],
+      "lore": "Autrefois dévouée à son dieu, la Prêtresse fut témoin du massacre de son ordre par des fanatiques. Dans sa douleur, elle renia sa foi et embrassa les ténèbres. Hantée par les fantômes de son passé, elle s'aventure dans les donjons, cherchant une rédemption impossible ou peut-être la fin de son tourment. Son pouvoir de guérison, jadis source de vie, est maintenant teinté d'une cruauté glaciale."
     },
     {
       "id": 4,
       "name": "Croisé",
       "hp": 10,
-      "maxHp": 10,
+      "maxHp": 20,
       "gold": 0,
       "rations": 4,
       "armor": 1,
@@ -66,13 +69,14 @@
       "skills": [
         { "name": "Frappe divine", "usageType": "combat" },
         { "name": "Aura de courage", "usageType": "chamber" }
-      ]
+      ],
+      "lore": "Jadis champion de la lumière, le Croisé a vu sa foi ébranlée lors d'une mission qui a mal tourné. Envoyé pour purifier un village corrompu, il découvrit trop tard que les 'hérétiques' n'étaient que des innocents victimes d'une manipulation. Parmi eux se trouvait une jeune archère dont il tua la famille avant de réaliser son erreur. Rongé par la culpabilité et hanté par les visages de ceux qu'il a injustement condamnés, il erre maintenant dans les donjons, cherchant une rédemption qu'il sait impossible. Son armure autrefois étincelante est maintenant ternie, tout comme son âme, par le poids de ses actes."
     },
     {
       "id": 5,
       "name": "Barbare",
       "hp": 15,
-      "maxHp": 15,
+      "maxHp": 20,
       "gold": 1,
       "rations": 5,
       "armor": 0,
@@ -82,8 +86,9 @@
       "defensivePotion": null,
       "skills": [
         { "name": "Rage berserk", "usageType": "combat" },
-        { "name": "Cri de guerre", "usageType": "chamber" }
-      ]
+        { "name": "Intimidation", "usageType": "chamber" }
+      ],
+      "lore": "Le Barbare porte le fardeau d'une malédiction ancestrale, transmise dans le sang de sa tribu. Chaque bataille nourrit la bête intérieure qui menace de le consumer. Il s'enfonce dans les donjons, espérant trouver un moyen de briser cette malédiction ou, à défaut, un adversaire assez puissant pour mettre fin à son existence tourmentée. Sa rage, autrefois source de force, est devenue une prison de chair et de fureur."
     },
     {
       "id": 6,
@@ -100,7 +105,8 @@
       "skills": [
         { "name": "Tir précis", "usageType": "combat" },
         { "name": "Oeil de faucon", "usageType": "chamber" }
-      ]
+      ],
+      "lore": "L'Archer, unique survivante d'un massacre perpétré par un croisé égaré, a juré vengeance contre tous ceux qui abusent de leur pouvoir au nom d'une prétendue justice. Ses flèches, autrefois utilisées pour chasser et protéger son village, sont maintenant trempées dans l'amertume et la rage. Poursuivant le Croisé responsable de la mort de sa famille, elle s'est enfoncée dans les profondeurs des donjons, où les rumeurs disent qu'il cherche la rédemption. Mais à mesure qu'elle traque sa proie, l'obscurité des donjons commence à corrompre son cœur, la transformant peu à peu en ce qu'elle a juré de détruire."
     },
     {
       "id": 7,
@@ -117,13 +123,14 @@
       "skills": [
         { "name": "Bombe alchimique", "usageType": "combat" },
         { "name": "Transmutation", "usageType": "chamber" }
-      ]
+      ],
+      "lore": "L'Alchimiste était autrefois un brillant chercheur, obsédé par la quête de l'élixir de vie éternelle. Dans sa quête effrénée d'immortalité, il a franchi des lignes éthiques, expérimentant sur des sujets non consentants et manipulant des forces au-delà de sa compréhension. Sa dernière expérience a horriblement mal tourné, transformant son assistant en une abomination torturée et libérant une peste alchimique qui a décimé sa ville natale. Fuyant les conséquences de ses actes, il s'est réfugié dans les profondeurs des donjons, espérant y trouver les ingrédients rares et les connaissances interdites nécessaires pour inverser les effets de sa création monstrueuse. Chaque potion qu'il prépare, chaque formule qu'il murmure est teintée de son désespoir et de sa culpabilité, alors qu'il cherche désespérément à racheter ses péchés tout en luttant contre la tentation de poursuivre ses recherches maudites."
     },
     {
       "id": 8,
       "name": "Druide",
       "hp": 12,
-      "maxHp": 12,
+      "maxHp": 20,
       "gold": 2,
       "rations": 4,
       "armor": 0,
@@ -134,7 +141,8 @@
       "skills": [
         { "name": "Forme animale", "usageType": "combat" },
         { "name": "Communion avec la nature", "usageType": "chamber" }
-      ]
+      ],
+      "lore": "Le Druide, autrefois gardien de la forêt, a vu son sanctuaire corrompu par une force obscure émanant des profondeurs de la terre. Déchiré entre son devoir et sa survie, il a fui, abandonnant son rôle sacré. Rongé par la culpabilité et la honte, il s'aventure dans les donjons, cherchant la source de cette corruption pour la détruire, même si cela signifie sacrifier sa propre humanité. Sa connexion avec la nature, autrefois pure, est maintenant teintée d'une noirceur qui ne cesse de grandir."
     }
   ],
   "tiles": [
@@ -699,7 +707,7 @@
   "dungeons": [
     {
       "id": 1,
-      "name": "La Citadelle des Ombres",
+      "name": "Les Catacombes Oubliées",
       "difficulty": "Facile",
       "floors": [
         {
@@ -732,11 +740,12 @@
             { "number": 3, "type": "boss" }
           ]
         }
-      ]
+      ],
+      "lore": "Jadis lieu de repos éternel pour les nobles, les Catacombes Oubliées sont devenues un labyrinthe de corruption et de folie. Les âmes des défunts, tourmentées par des rituels nécromantiques ratés, errent dans une agonie éternelle. Les murs suintants murmurent des secrets indicibles, et l'air est chargé de l'odeur de la putréfaction et du désespoir. On dit que ceux qui s'aventurent trop profondément peuvent entendre les pleurs des enfants sacrifiés lors d'anciens rites, leurs esprits piégés à jamais dans ce purgatoire souterrain."
     },
     {
       "id": 2,
-      "name": "Les Catacombes Maudites",
+      "name": "La Citadelle du Crépuscule",
       "difficulty": "Moyen",
       "floors": [
         {
@@ -766,7 +775,8 @@
             { "number": 5, "type": "boss" }
           ]
         }
-      ]
+      ],
+      "lore": "Autrefois siège d'un ordre de paladins, la Citadelle du Crépuscule est tombée dans les ténèbres après que son chef, consumé par la soif de pouvoir, ait conclu un pacte avec des entités démoniaques. Les couloirs résonnent encore des cris d'agonie des innocents sacrifiés pour sceller ce pacte maudit. Les chevaliers, jadis nobles défenseurs, sont désormais des abominations sans âme, leurs armures fusionnées à leur chair corrompue. L'air lui-même semble chargé de malveillance, et ceux qui osent pénétrer ces murs maudits risquent de perdre non seulement leur vie, mais aussi leur santé mentale."
     },
     {
       "id": 3,
@@ -803,7 +813,8 @@
             { "number": 6, "type": "boss" }
           ]
         }
-      ]
+      ],
+      "lore": "La Tour du Nécromancien se dresse comme un monument à la folie et à la cruauté humaine. Son créateur, le tristement célèbre Nécromancien Zul'Tharan, a poussé l'art de la nécromancie au-delà de toute éthique et raison. Chaque pierre de la tour est imprégnée de la souffrance de milliers d'âmes torturées. Les étages inférieurs grouillent de créatures mi-mortes, résultats d'expériences abominables, tandis que les niveaux supérieurs abritent des horreurs indicibles que l'esprit humain peine à concevoir. Le sommet de la tour est le théâtre d'un rituel perpétuel, où Zul'Tharan tente de fusionner le monde des vivants et celui des morts. Les murs eux-mêmes semblent respirer, alimentés par l'énergie nécrotique qui imprègne chaque recoin. Des voix spectrales murmurent des secrets interdits, promettant pouvoir et connaissance à ceux qui oseraient les écouter, au prix de leur santé mentale. Les rares survivants qui ont osé s'aventurer dans la Tour parlent de salles remplies d'organes palpitants arrachés à des victimes encore conscientes, de couloirs où le sol est fait d'ossements broyés, et de chambres où le temps et l'espace se tordent de manière impossible. On raconte que Zul'Tharan lui-même n'est plus vraiment vivant ni mort, mais existe dans un état de non-vie perpétuelle, son corps n'étant plus qu'un vaisseau pour une conscience fractionnée entre plusieurs plans d'existence. La Tour attire inexorablement ceux qui cherchent le pouvoir ultime sur la vie et la mort, mais elle ne promet que folie, corruption et une damnation éternelle à ceux qui osent défier ses secrets."
     }
   ],
   "gameOverDialogues": [

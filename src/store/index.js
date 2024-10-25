@@ -10,7 +10,7 @@ const potions = {
 
 export default createStore({
   state: {
-    character: { ...initialCharacterState },
+    character: null,
     dungeon: null,
     currentLevel: 1,
     currentChamber: 1,
@@ -23,9 +23,12 @@ export default createStore({
     logMessages: [],
   },
   mutations: {
+    SET_CHARACTER(state, character) {
+      state.character = { ...character };
+    },
     UPDATE_STAT(state, { stat, value }) {
       const maxValues = {
-        hp: 20,
+        hp: state.character.maxHp,
         exp: 23,
         armor: 4,
         rations: 5,
@@ -69,13 +72,28 @@ export default createStore({
     ADD_LOG_MESSAGE(state, message) {
       state.logMessages.push(message);
     },
+    SET_CURRENT_LEVEL(state, level) {
+      state.currentLevel = level;
+    },
+    SET_CURRENT_CHAMBER(state, chamber) {
+      state.currentChamber = chamber;
+    },
   },
   actions: {
-    initializeGame({ commit, state }) {
-      const selectedDungeon = gameData.dungeons[0]; // Sélectionnez le donjon que vous voulez
-      commit('SET_DUNGEON', selectedDungeon);
-      commit('SET_CURRENT_FLOOR', 1);
-      commit('SET_CURRENT_ROOM', 1);
+    loadGameData({ commit }) {
+      console.log('Game data loaded');
+    },
+    initGame({ commit, dispatch }) {
+      dispatch('loadGameData');
+    },
+    setCharacter({ commit }, character) {
+      commit('SET_CHARACTER', character);
+    },
+    initializeGame({ commit }, { character, dungeon }) {
+      commit('SET_CHARACTER', character);
+      commit('SET_DUNGEON', dungeon);
+      commit('SET_CURRENT_LEVEL', 1);
+      commit('SET_CURRENT_CHAMBER', 1);
     },
     applyReward({ commit }, reward) {
       for (const [stat, value] of Object.entries(reward)) {
