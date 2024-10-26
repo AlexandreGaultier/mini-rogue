@@ -1,8 +1,14 @@
 <template>
   <div class="game-over">
-    <h1>Game Over</h1>
-    <p class="death-message">{{ deathMessage }}</p>
-    <button @click="returnToMenu">Retour au menu principal</button>
+    <div class="fog-overlay"></div>
+    <div class="content">
+      <h1>Game Over</h1>
+      <div class="image-container">
+        <img src="../assets/img/gameOver/1.webp" alt="Game Over" class="game-over-image">
+      </div>
+      <p class="death-message">{{ deathMessage }}</p>
+      <button @click="returnToMenu">Retour au menu principal</button>
+    </div>
   </div>
 </template>
 
@@ -40,7 +46,9 @@ function returnToMenu() {
 </script>
 
 <style scoped>
+
 .game-over {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -48,12 +56,45 @@ function returnToMenu() {
   height: 100vh;
   background-color: #000;
   color: #8b0000;
+  overflow: hidden;
+}
+
+.fog-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.4"/></svg>');
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 h1 {
   font-size: 4rem;
   margin-bottom: 2rem;
   text-shadow: 0 0 10px #ff0000;
+}
+
+.image-container {
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 2rem;
+}
+
+.game-over-image {
+  width: 50%;
+  height: auto;
+  border-radius: 10px;
 }
 
 .death-message {
