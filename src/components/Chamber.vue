@@ -19,10 +19,15 @@
             </template>
             <!-- Affichage pour les récompenses, bénéfices et pièges -->
             <template v-if="['reward', 'beneficial', 'trap'].includes(tileContent(i).type)">
-              <p class="immediate-reward">{{ tileContent(i).immediateReward?.text || '' }}</p>
+              <p v-if="tileContent(i).immediateReward" 
+                 class="immediate-reward" 
+                 :class="getRewardColorClass(tileContent(i).immediateReward)">
+                 &#9655; {{ tileContent(i).immediateReward.text }}
+              </p>
               <ul class="roll-rewards" v-if="tileContent(i).rollRewards">
-                <li v-for="(reward, roll) in tileContent(i).rollRewards" :key="roll">
-                  {{ roll }}: {{ reward.text }}
+                <li v-for="(reward, roll) in tileContent(i).rollRewards" :key="roll"
+                    :class="getRewardColorClass(reward)">
+                  {{ getDiceSymbol(roll) }} {{ reward.text }}
                 </li>
               </ul>
             </template>
@@ -41,9 +46,13 @@
                 </button>
                 <template v-else>
                   <p class="dice-result">
-                    Résultat : {{ diceResults[i] }}
+                    Résultat : <span :class="getRewardColorClass(tileContent(i).rollRewards[diceResults[i]])">
+                      {{ getDiceSymbol(diceResults[i]) }} {{ diceResults[i] }}
+                    </span>
                     <br>
-                    {{ tileContent(i).rollRewards[diceResults[i]].text }}
+                    <span :class="getRewardColorClass(tileContent(i).rollRewards[diceResults[i]])">
+                      {{ tileContent(i).rollRewards[diceResults[i]].text }}
+                    </span>
                   </p>
                 </template>
               </div>
@@ -92,6 +101,7 @@
               >
                 {{ choice.text }} ({{ choice.cost }} or)
               </button>
+              <br>
               <button @click="completeMerchantTile(i)" class="continue-button">
                 Poursuivre sa route
               </button>
@@ -265,6 +275,8 @@ function handleImmediateReward(tileNumber) {
 
 function interactWithTile(tileNumber) {
   const tile = tileContent(tileNumber);
+  console.log('Tile content:', tile); // Log pour vérifier le contenu de la tuile
+
   if (tile.type === 'lore') {
     handleLoreTile(tileNumber);
   } else if (tile.type === 'merchant') {
@@ -275,9 +287,10 @@ function interactWithTile(tileNumber) {
     }
   } else {
     if (tile.immediateReward) {
-      applyReward(tile.immediateReward.effect);
+      console.log('Immediate reward found:', tile.immediateReward); // Log pour vérifier la récompense immédiate
+      applyImmediateReward(tile.immediateReward);
     }
-    if (tile.mechanism === 'ImmediateReward') {
+    if (tile.mechanism === 'ImmediateReward' && tile.effect) {
       applyReward(tile.effect);
     }
     completeTile(tileNumber);
@@ -358,7 +371,24 @@ function formatReward(reward) {
 }
 
 function goToNextRoom() {
+  // Récupérer l'état actuel du personnage
+  const character = store.state.character;
+  
+  // Vérifier les rations
+  if (character.rations > 0) {
+    // Consommer une ration
+    store.commit('UPDATE_STAT', { stat: 'rations', value: -1 });
+    store.commit('ADD_LOG_MESSAGE', 'Vous consommez 1 ration pour votre voyage.');
+  } else {
+    // Pas de rations, le personnage perd 3 PV
+    store.commit('UPDATE_STAT', { stat: 'hp', value: -3 });
+    store.commit('ADD_LOG_MESSAGE', 'Sans rations, vous perdez 3 PV durant votre voyage.');
+  }
+
+  // Passer à la salle suivante
   store.dispatch('nextRoom');
+  
+  // Réinitialiser les tuiles pour la nouvelle salle
   initializeTiles();
 }
 
@@ -448,9 +478,48 @@ function completeMerchantTile(tileNumber) {
   revealAdjacentTiles(tileNumber);
   store.commit('SET_CURRENT_MERCHANT_TILE', null);
 }
+
+function getRewardColorClass(reward) {
+  if (!reward || !reward.color) return '';
+  return `reward-${reward.color}`;
+}
+
+function getDiceSymbol(roll) {
+  const diceSymbols = {
+    '1': '⚀',
+    '2': '⚁',
+    '3': '⚂',
+    '4': '⚃',
+    '5': '⚄',
+    '6': '⚅'
+  };
+  return diceSymbols[roll] || roll;
+}
+
+// Ajoutez cette nouvelle fonction pour gérer spécifiquement les récompenses immédiates :
+
+function applyImmediateReward(immediateReward) {
+  console.log('Applying immediate reward:', immediateReward); // Log pour vérifier l'application de la récompense
+  if (immediateReward.effect) {
+    if (typeof immediateReward.effect === 'object') {
+      Object.entries(immediateReward.effect).forEach(([stat, value]) => {
+        console.log(`Updating stat: ${stat} by ${value}`); // Log pour chaque mise à jour de stat
+        store.commit('UPDATE_STAT', { stat, value });
+      });
+    } else {
+      console.log('Applying reward effect:', immediateReward.effect);
+      applyReward(immediateReward.effect);
+    }
+    store.commit('ADD_LOG_MESSAGE', immediateReward.text);
+  }
+}
 </script>
 
 <style scoped>
+/* Ajoutez ceci au début du bloc style */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+/* Modifiez le style .chamber pour inclure la nouvelle font-family */
 .chamber {
   margin-bottom: 1rem;
   height: 100%;
@@ -459,6 +528,7 @@ function completeMerchantTile(tileNumber) {
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--color-accent) var(--color-dark-gray);
+  font-family: 'Lato', sans-serif;
 }
 
 .tiles-grid {
@@ -484,6 +554,7 @@ function completeMerchantTile(tileNumber) {
   align-items: center;
   opacity: 0.5;
   font-size: 0.85rem; /* Réduit la taille de la police */
+  color: rgba(255, 255, 255, 0.8); /* Couleur légèrement moins vive pour la description */
 }
 
 .tile.available {
@@ -507,12 +578,49 @@ h3 {
 }
 
 .tile-details {
+  background-color: rgba(29, 29, 29, 0.7) !important;
+  width: 70%;
+  border-radius: 0.5rem;
+  padding: 0 1.5rem;
   margin-top: 0.5rem;
   font-size: 0.85rem; /* Réduit la taille de la police */
 }
 
+.tile-details button {
+  background-color: transparent;
+  color: var(--color-text);
+  border-radius: 0.5rem;
+  padding: 0.8rem 1.2rem;
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  width: auto;
+  display: inline-block;
+}
+
+.tile-details button:hover {
+  font-weight: 700;
+  font-size: 1.2rem;
+  transform: translateY(-2px);
+}
+
+.tile-details button:active {
+  transform: translateY(1px);
+}
+
+.tile-details button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
 .immediate-reward {
   margin-bottom: 0.5rem;
+  font-weight: 700; /* Texte en gras */
+  color: var(--color-text); /* Couleur de texte normale pour les récompenses */
 }
 
 .roll-rewards {
@@ -525,6 +633,8 @@ h3 {
 
 .roll-rewards li {
   margin-bottom: 0.3rem;
+  font-weight: 700; /* Texte en gras */
+  color: var(--color-text); /* Couleur de texte normale pour les récompenses */
 }
 
 button {
@@ -544,10 +654,10 @@ button:disabled {
 }
 
 .dice-result {
-  margin-top: 0.5rem;
+  margin: 0.5rem 0;
   font-weight: bold;
   color: var(--color-accent);
-  font-size: 0.85rem; /* Réduit la taille de la police */
+  font-size: 1.2rem !important; /* Réduit la taille de la police */
 }
 
 .continue-button {
@@ -628,8 +738,39 @@ button:disabled {
   .continue-button {
     font-size: 1.1rem;
   }
+
+  .immediate-reward, .roll-rewards li {
+    font-size: 1rem; /* Ajustez la taille de la police si nécessaire */
+  }
+
+  .tile p:not(.immediate-reward):not(.roll-rewards li) {
+    color: rgba(255, 255, 255, 0.8); /* Couleur légèrement moins vive pour les autres paragraphes */
+  }
+}
+
+.reward-green {
+  color: #8BC34A !important; /* Vert plus doux */
+}
+
+.reward-red {
+  color: #FF7043 !important; /* Rouge-orange plus doux */
+}
+
+.reward-white {
+  color: #E0E0E0 !important; /* Blanc cassé */
+}
+
+.immediate-reward, .roll-rewards li {
+  font-weight: 700;
+}
+
+/* Assurez-vous que ces styles sont après les styles de couleur pour qu'ils aient la priorité */
+.tile p:not(.immediate-reward):not(.roll-rewards li) {
+  color: rgba(255, 255, 255, 0.8);
 }
 </style>
+
+
 
 
 

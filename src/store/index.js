@@ -1,5 +1,6 @@
 import { createStore } from 'vuex';
 import gameData from '../data/game-data.json';
+import router from '../router';  // Importez le routeur
 
 const initialCharacterState = { ...gameData.characters[0] };
 
@@ -24,7 +25,7 @@ export default createStore({
   },
   mutations: {
     SET_CHARACTER(state, character) {
-      state.character = { ...character };
+      state.character = character;
     },
     UPDATE_STAT(state, { stat, value }) {
       const maxValues = {
@@ -159,6 +160,26 @@ export default createStore({
       } else {
         commit('UPDATE_STAT', { stat: 'hp', value: -3 });
       }
+    },
+    completeFloor({ commit, state, dispatch }) {
+      // Logique pour compléter un étage
+      commit('INCREMENT_FLOOR')
+
+      if (state.currentFloor > state.totalFloors) {
+        // Le joueur a terminé tous les étages
+        dispatch('completeDungeon')
+      } else {
+        // Passer à l'étage suivant
+        dispatch('setupNextFloor')
+      }
+    },
+
+    completeDungeon({ commit }) {
+      // Logique pour terminer le donjon
+      commit('SET_DUNGEON_COMPLETED', true)
+      
+      // Rediriger vers la vue de victoire
+      router.push('/victory')
     }
   },
   getters: {
@@ -171,3 +192,4 @@ export default createStore({
     currentFloorData: (state) => state.dungeon.floors.find(f => f.level === state.currentFloor),
   }
 });
+

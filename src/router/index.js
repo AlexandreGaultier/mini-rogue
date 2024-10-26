@@ -3,6 +3,7 @@ import CharacterSelectionView from '../views/CharacterSelectionView.vue'
 import GameView from '../views/GameView.vue'
 import GameOverView from '../views/GameOverView.vue'
 import RulesView from '../views/RulesView.vue'
+import VictoryView from '../views/VictoryView.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/rules',
     name: 'Rules',
     component: RulesView
+  },
+  {
+    path: '/victory',
+    name: 'Victory',
+    component: VictoryView
   }
 ]
 

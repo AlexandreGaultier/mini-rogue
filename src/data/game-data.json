@@ -153,32 +153,39 @@
       "mechanism": "DiceRoll6",
       "immediateReward": {
         "text": "+1 pièce d'or",
-        "effect": { "gold": 1 }
+        "effect": { "gold": 1 },
+        "color": "green"
       },
       "rollRewards": {
         "1": {
           "text": "+1 pièce d'or",
-          "effect": { "gold": 1 }
+          "effect": { "gold": 1 },
+          "color": "green"
         },
         "2": {
           "text": "+2 pièces d'or",
-          "effect": { "gold": 2 }
+          "effect": { "gold": 2 },
+          "color": "green"
         },
         "3": {
           "text": "+5 points de vie",
-          "effect": { "hp": 5 }
+          "effect": { "hp": 5 },
+          "color": "green"
         },
         "4": {
           "text": "Potion offensive aléatoire",
-          "effect": { "offensivePotion": "random" }
+          "effect": { "offensivePotion": "random" },
+          "color": "green"
         },
         "5": {
           "text": "Potion défensive aléatoire",
-          "effect": { "defensivePotion": "random" }
+          "effect": { "defensivePotion": "random" },
+          "color": "green"
         },
         "6": {
           "text": "+1 ration",
-          "effect": { "rations": 1 }
+          "effect": { "rations": 1 },
+          "color": "green"
         }
       }
     },
@@ -190,16 +197,19 @@
       "description": "Des livres anciens flottent dans l'air, leurs pages tournent d'elles-mêmes dans un murmure sinistre.",
       "immediateReward": {
         "text": "Gagnez 1 point d'expérience",
-        "effect": { "exp": 1 }
+        "effect": { "exp": 1 },
+        "color": "green"
       },
       "rollRewards": {
         "1": {
           "text": "+2 points d'expérience",
-          "effect": { "exp": 2 }
+          "effect": { "exp": 2 },
+          "color": "green"
         },
         "2": {
           "text": "+3 points d'expérience",
-          "effect": { "exp": 3 }
+          "effect": { "exp": 3 },
+          "color": "green"
         }
       }
     },
@@ -211,32 +221,39 @@
       "description": "Un autel de pierre sombre, taché de sang séché. Des runes anciennes pulsent faiblement sur sa surface.",
       "immediateReward": {
         "text": "Sacrifiez 2 PV pour gagner 1 pièce d'or",
-        "effect": { "hp": -2, "gold": 1 }
+        "effect": { "hp": -2, "gold": 1 },
+        "color": "white"
       },
       "rollRewards": {
         "1": {
           "text": "+3 points d'expérience",
-          "effect": { "exp": 3 }
+          "effect": { "exp": 3 },
+          "color": "green"
         },
         "2": {
           "text": "+2 armure",
-          "effect": { "armor": 2 }
+          "effect": { "armor": 2 },
+          "color": "green"
         },
         "3": {
           "text": "Potion offensive aléatoire",
-          "effect": { "offensivePotion": "random" }
+          "effect": { "offensivePotion": "random" },
+          "color": "green"
         },
         "4": {
           "text": "Potion défensive aléatoire",
-          "effect": { "defensivePotion": "random" }
+          "effect": { "defensivePotion": "random" },
+          "color": "green"
         },
         "5": {
           "text": "+5 points de vie",
-          "effect": { "hp": 5 }
+          "effect": { "hp": 5 },
+          "color": "green"
         },
         "6": {
           "text": "+3 pièces d'or",
-          "effect": { "gold": 3 }
+          "effect": { "gold": 3 },
+          "color": "green"
         }
       }
     },
@@ -248,7 +265,8 @@
       "description": "Un liquide rouge et épais coule d'une fontaine sculptée en forme de gargouille grimaçante.",
       "immediateReward": {
         "text": "Buvez le sang pour gagner 5 PV, mais perdez 1 point d'expérience",
-        "effect": { "hp": 5, "exp": -1 }
+        "effect": { "hp": 5, "exp": -1 },
+        "color": "white"
       }
     },
     {
@@ -257,15 +275,21 @@
       "difficulty": 3,
       "mechanism": "DiceRoll2",
       "description": "Un large miroir dans un coin de la pièce réfléchit votre image, mais une aura de malveillance vous entoure.",
-      "effect": { "hp": -2 },
+      "immediateReward": {
+        "text": "Perdez 2 PV",
+        "effect": { "hp": -2 },
+        "color": "red"
+      },
       "rollRewards": {
         "1": {
           "text": "Votre reflet vous attaque : -2 PV",
-          "effect": { "hp": -2 }
+          "effect": { "hp": -2 },
+          "color": "red"
         },
         "2": {
           "text": "Vous maîtrisez votre reflet : +3 exp",
-          "effect": { "exp": 3 }
+          "effect": { "exp": 3 },
+          "color": "green"
         }
       }
     },
@@ -278,15 +302,18 @@
       "rollRewards": {
         "1": {
           "text": "Malédiction : -1 à toutes les stats",
-          "effect": { "hp": -1, "gold": -1, "armor": -1, "exp": -1 }
+          "effect": { "hp": -1, "gold": -1, "armor": -1, "exp": -1 },
+          "color": "red"
         },
         "2": {
           "text": "Trésor ancien : +5 or",
-          "effect": { "gold": 5 }
+          "effect": { "gold": 5 },
+          "color": "green"
         },
         "3": {
           "text": "Bénédiction des anciens : +1 à toutes les stats",
-          "effect": { "hp": 1, "gold": 1, "armor": 1, "exp": 1 }
+          "effect": { "hp": 1, "gold": 1, "armor": 1, "exp": 1 },
+          "color": "green"
         }
       }
     },
@@ -298,20 +325,24 @@
       "description": "Des braises rougeoyantes illuminent encore les vestiges d'une ancienne forge.",
       "immediateReward": {
         "text": "Renforcez votre équipement : +1 armure",
-        "effect": { "armor": 1 }
+        "effect": { "armor": 1 },
+        "color": "green"
       },
       "rollRewards": {
         "1": {
           "text": "Trouvez un marteau enchanté : +2 dégâts pour le prochain combat",
-          "effect": { "tempDamage": 2 }
+          "effect": { "tempDamage": 2 },
+          "color": "green"
         },
         "2": {
           "text": "Découvrez des techniques de forge anciennes : +2 armure",
-          "effect": { "armor": 2 }
+          "effect": { "armor": 2 },
+          "color": "green"
         },
         "3": {
           "text": "Forgez une arme légendaire : +5 exp, +3 or",
-          "effect": { "exp": 5, "gold": 3 }
+          "effect": { "exp": 5, "gold": 3 },
+          "color": "green"
         }
       }
     },
@@ -323,16 +354,19 @@
       "description": "Des plantes aux couleurs vives et aux formes étranges emplissent la pièce. L'air est lourd de spores toxiques.",
       "immediateReward": {
         "text": "Perdez 2 PV et 1 ration",
-        "effect": { "hp": -2, "rations": -1 }
+        "effect": { "hp": -2, "rations": -1 },
+        "color": "red"
       },
       "rollRewards": {
         "1": {
           "text": "Trouvez un antidote : annule les effets négatifs",
-          "effect": { "hp": 2, "rations": 1 }
+          "effect": { "hp": 2, "rations": 1 },
+          "color": "green"
         },
         "2": {
           "text": "Récoltez des herbes rares : +1 potion offensive",
-          "effect": { "offensivePotion": "random" }
+          "effect": { "offensivePotion": "random" },
+          "color": "green"
         }
       }
     },
@@ -345,15 +379,18 @@
       "rollRewards": {
         "1": {
           "text": "L'écho vous désoriente : -1 PV",
-          "effect": { "hp": -1 }
+          "effect": { "hp": -1 },
+          "color": "red"
         },
         "2": {
           "text": "L'écho vous inspire : +2 exp",
-          "effect": { "exp": 2 }
+          "effect": { "exp": 2 },
+          "color": "green"
         },
         "3": {
           "text": "L'écho révèle un passage secret : +3 or",
-          "effect": { "gold": 3 }
+          "effect": { "gold": 3 },
+          "color": "green"
         }
       }
     },
@@ -365,16 +402,19 @@
       "description": "Un puits sans fond émet une lueur spectrale. Des murmures plaintifs s'élèvent de ses profondeurs.",
       "immediateReward": {
         "text": "Perdez 3 PV et 2 points d'expérience",
-        "effect": { "hp": -3, "exp": -2 }
+        "effect": { "hp": -3, "exp": -2 },
+        "color": "red"
       },
       "rollRewards": {
         "1": {
           "text": "Résistez à l'appel du puits : +5 exp, +3 PV",
-          "effect": { "exp": 5, "hp": 3 }
+          "effect": { "exp": 5, "hp": 3 },
+          "color": "green"
         },
         "2": {
           "text": "Votre âme est torturée : -5 PV",
-          "effect": { "hp": -5 }
+          "effect": { "hp": -5 },
+          "color": "red"
         }
       }
     },
@@ -386,16 +426,19 @@
       "description": "Un autel dédié à une divinité oubliée trône au centre de la pièce. Une aura de paix vous enveloppe.",
       "immediateReward": {
         "text": "Recevez la bénédiction : +2 PV, +1 exp",
-        "effect": { "hp": 2, "exp": 1 }
+        "effect": { "hp": 2, "exp": 1 },
+        "color": "green"
       },
       "rollRewards": {
         "1": {
           "text": "Offrande acceptée : +3 or, +2 exp",
-          "effect": { "gold": 3, "exp": 2 }
+          "effect": { "gold": 3, "exp": 2 },
+          "color": "green"
         },
         "2": {
           "text": "Illumination divine : +1 à toutes les stats",
-          "effect": { "hp": 1, "gold": 1, "armor": 1, "exp": 1, "rations": 1 }
+          "effect": { "hp": 1, "gold": 1, "armor": 1, "exp": 1, "rations": 1 },
+          "color": "green"
         }
       }
     },
@@ -409,11 +452,13 @@
       "rollRewards": {
         "1": {
           "text": "Percez les illusions : +3 exp",
-          "effect": { "exp": 3 }
+          "effect": { "exp": 3 },
+          "color": "green"
         },
         "2": {
           "text": "Maîtrisez les illusions : +1 potion défensive",
-          "effect": { "defensivePotion": "random" }
+          "effect": { "defensivePotion": "random" },
+          "color": "green"
         }
       }
     },
@@ -425,16 +470,19 @@
       "description": "Des cristaux multicolores scintillent sur les murs, émettant une douce lumière apaisante.",
       "immediateReward": {
         "text": "La lumière vous revigore : +3 PV",
-        "effect": { "hp": 3 }
+        "effect": { "hp": 3 },
+        "color": "green"
       },
       "rollRewards": {
         "1": {
           "text": "Un cristal se détache : +2 or",
-          "effect": { "gold": 2 }
+          "effect": { "gold": 2 },
+          "color": "green"
         },
         "2": {
           "text": "Absorption d'énergie cristalline : +4 exp",
-          "effect": { "exp": 4 }
+          "effect": { "exp": 4 },
+          "color": "green"
         }
       }
     },
@@ -444,14 +492,21 @@
       "difficulty": 5,
       "mechanism": "DiceRoll2",
       "description": "Le sol s'effondre sous vos pieds, vous précipitant dans une fosse grouillante de serpents venimeux.",
+      "immediateReward": {
+        "text": "Perdez 3 PV et 1 ration",
+        "effect": { "hp": -3, "rations": -1 },
+        "color": "red"
+      },
       "rollRewards": {
         "1": {
           "text": "Échappez aux serpents : +5 exp, +1 potion offensive",
-          "effect": { "exp": 5, "offensivePotion": "random" }
+          "effect": { "exp": 5, "offensivePotion": "random" },
+          "color": "green"
         },
         "2": {
           "text": "Vous êtes dévoré par les serpents : -5 PV, -1 armure",
-          "effect": { "hp": -5, "armor": -1 }
+          "effect": { "hp": -5, "armor": -1 },
+          "color": "red"
         }
       }
     },
@@ -464,15 +519,18 @@
       "rollRewards": {
         "1": {
           "text": "Surcharge magique : -2 PV, +3 exp",
-          "effect": { "hp": -2, "exp": 3 }
+          "effect": { "hp": -2, "exp": 3 },
+          "color": "red"
         },
         "2": {
           "text": "Harmonisation arcanique : +1 à toutes les stats",
-          "effect": { "hp": 1, "gold": 1, "armor": 1, "exp": 1, "rations": 1 }
+          "effect": { "hp": 1, "gold": 1, "armor": 1, "exp": 1, "rations": 1 },
+          "color": "green"
         },
         "3": {
           "text": "Révélation mystique : +5 exp, +1 potion aléatoire",
-          "effect": { "exp": 5, "offensivePotion": "random" }
+          "effect": { "exp": 5, "offensivePotion": "random" },
+          "color": "green"
         }
       }
     },
@@ -485,11 +543,13 @@
       "rollRewards": {
         "1": {
           "text": "Hommage aux héros déchus : +4 exp",
-          "effect": { "exp": 4 }
+          "effect": { "exp": 4 },
+          "color": "green"
         },
         "2": {
           "text": "Découverte d'un trésor caché : +3 or, +1 ration",
-          "effect": { "gold": 3, "rations": 1 }
+          "effect": { "gold": 3, "rations": 1 },
+          "color": "green"
         }
       }
     },
@@ -501,7 +561,8 @@
       "description": "Une salle sans rien de particulier.",
       "immediateReward": {
         "text": "Rien ne se passe",
-        "effect": {}
+        "effect": {},
+        "color": "white"
       }
     },
     {
@@ -702,6 +763,163 @@
       "damage": 10,
       "reward": { "exp": 5, "gold": 9, "defensivePotion": "Potion de soin" },
       "difficulty": 6
+    },
+    {
+      "type": "boss",
+      "name": "Gardien des Catacombes",
+      "health": 30,
+      "damage": 8,
+      "reward": { "exp": 10, "gold": 20 },
+      "difficulty": 5,
+      "description": "Un ancien chevalier ressuscité, gardien éternel des secrets des catacombes."
+    },
+    {
+      "type": "boss",
+      "name": "Reine des Araignées",
+      "health": 25,
+      "damage": 6,
+      "reward": { "exp": 8, "gold": 15, "defensivePotion": 1 },
+      "difficulty": 4,
+      "description": "Une monstrueuse araignée géante qui règne sur les recoins sombres du donjon."
+    },
+    {
+      "type": "boss",
+      "name": "Nécromancien Fou",
+      "health": 20,
+      "damage": 10,
+      "reward": { "exp": 12, "gold": 25, "offensivePotion": 1 },
+      "difficulty": 6,
+      "description": "Un sorcier corrompu par la magie noire, capable de réanimer les morts."
+    },
+    {
+      "type": "boss",
+      "name": "Golem de Cristal",
+      "health": 40,
+      "damage": 5,
+      "reward": { "exp": 15, "gold": 30, "armor": 2 },
+      "difficulty": 7,
+      "description": "Une création magique faite de cristaux enchantés, presque indestructible."
+    },
+    {
+      "type": "boss",
+      "name": "Banshee Hurlante",
+      "health": 15,
+      "damage": 12,
+      "reward": { "exp": 10, "gold": 20, "defensivePotion": 2 },
+      "difficulty": 5,
+      "description": "Un esprit vengeur dont le cri peut glacer le sang et paralyser de terreur."
+    },
+    {
+      "type": "boss",
+      "name": "Minotaure du Labyrinthe",
+      "health": 35,
+      "damage": 9,
+      "reward": { "exp": 14, "gold": 28, "offensivePotion": 1 },
+      "difficulty": 6,
+      "description": "Le gardien légendaire du labyrinthe, mi-homme mi-taureau, armé d'une hache gigantesque."
+    },
+    {
+      "type": "boss",
+      "name": "Liche des Profondeurs",
+      "health": 30,
+      "damage": 15,
+      "reward": { "exp": 20, "gold": 40, "offensivePotion": 2 },
+      "difficulty": 8,
+      "description": "Un puissant mage mort-vivant qui a transcendé la mort grâce à des rituels interdits."
+    },
+    {
+      "type": "boss",
+      "name": "Hydre Venimeuse",
+      "health": 50,
+      "damage": 7,
+      "reward": { "exp": 18, "gold": 35, "defensivePotion": 1 },
+      "difficulty": 7,
+      "description": "Une créature monstrueuse à plusieurs têtes, chacune crachant un venin mortel."
+    },
+    {
+      "type": "boss",
+      "name": "Géant de Lave",
+      "health": 45,
+      "damage": 10,
+      "reward": { "exp": 16, "gold": 32, "armor": 3 },
+      "difficulty": 8,
+      "description": "Un colosse de roche en fusion, gardien des forges souterraines."
+    },
+    {
+      "type": "boss",
+      "name": "Maître des Illusions",
+      "health": 25,
+      "damage": 8,
+      "reward": { "exp": 13, "gold": 26, "offensivePotion": 1, "defensivePotion": 1 },
+      "difficulty": 6,
+      "description": "Un magicien rusé capable de créer des illusions mortelles et de manipuler la réalité."
+    },
+    {
+      "type": "boss",
+      "name": "Wyrm des Abysses",
+      "health": 60,
+      "damage": 12,
+      "reward": { "exp": 25, "gold": 50, "armor": 4 },
+      "difficulty": 9,
+      "description": "Un dragon primitif des profondeurs, ancien et terriblement puissant."
+    },
+    {
+      "type": "boss",
+      "name": "Golem d'Ossements",
+      "health": 40,
+      "damage": 8,
+      "reward": { "exp": 15, "gold": 30, "defensivePotion": 2 },
+      "difficulty": 7,
+      "description": "Une abomination créée à partir des ossements de centaines de victimes du donjon."
+    },
+    {
+      "type": "boss",
+      "name": "Spectre du Désespoir",
+      "health": 20,
+      "damage": 14,
+      "reward": { "exp": 17, "gold": 34, "offensivePotion": 2 },
+      "difficulty": 7,
+      "description": "Une entité éthérée qui se nourrit de la peur et du désespoir de ses victimes."
+    },
+    {
+      "type": "boss",
+      "name": "Roi Gobelin Mutant",
+      "health": 35,
+      "damage": 9,
+      "reward": { "exp": 14, "gold": 28, "armor": 2 },
+      "difficulty": 6,
+      "description": "Le chef suprême des gobelins, transformé par une magie chaotique en une créature monstrueuse."
+    },
+    {
+      "type": "boss",
+      "name": "Avatar de la Corruption",
+      "health": 70,
+      "damage": 15,
+      "reward": { "exp": 30, "gold": 60, "offensivePotion": 2, "defensivePotion": 2 },
+      "difficulty": 10,
+      "description": "La manifestation vivante de la corruption qui imprègne le donjon, un adversaire quasi divin."
+    },
+    {
+      "type": "boss",
+      "name": "Nécromancien Zul'Tharan",
+      "health": 150,
+      "damage": 25,
+      "reward": { 
+        "exp": 100, 
+        "gold": 200, 
+        "offensivePotion": 3, 
+        "defensivePotion": 3, 
+        "armor": 5,
+        "specialItem": "Bâton de Zul'Tharan"
+      },
+      "difficulty": 15,
+      "description": "Le maître absolu de la nécromancie, Zul'Tharan a transcendé la mort elle-même. Son pouvoir corrompu menace de consumer le monde entier.",
+      "specialAbilities": [
+        "Invocation de morts-vivants",
+        "Drain de vie",
+        "Malédiction affaiblissante"
+      ],
+      "finalBoss": true
     }
   ],
   "dungeons": [
@@ -837,7 +1055,7 @@
     "Votre courage s'évanouit dans l'obscurité, englouti par l'implacable cruauté du destin.",
     "Les monstres célèbrent votre défaite, votre nom devenant une légende macabre dans leurs rangs.",
     "Votre âme erre désormais dans les limbes du donjon, à jamais prisonnière de ses murs maudits.",
-    "Le temps s'arrête pour vous, figé dans cet instant de défaite au cœur des ténèbres.",
+    "Le temps s'arrête pour vous, fig dans cet instant de défaite au cœur des ténèbres.",
     "Votre épopée s'achève dans un soupir, étouffé par l'indifférence cruelle du labyrinthe.",
     "Les ombres du donjon se referment sur vous, effaçant toute trace de votre passage.",
     "Votre dernier souffle se perd dans le labyrinthe, emportant avec lui vos espoirs déchus.",

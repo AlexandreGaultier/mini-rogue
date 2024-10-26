@@ -31,7 +31,7 @@ const router = useRouter();
 const dungeon = computed(() => store.state.dungeon);
 const currentLevel = ref(1);
 const currentChamber = ref(1);
-const character = computed(() => store.state.character);
+const character = computed(() => store.state.character || {});
 
 watch(() => character.value.hp, (newHp) => {
   if (newHp <= 0) {
@@ -54,6 +54,13 @@ onUnmounted(() => {
   if (audio) {
     audio.pause();
     audio.currentTime = 0;
+  }
+});
+
+onMounted(() => {
+  if (!store.state.character) {
+    // Initialisez le personnage si ce n'est pas déjà fait
+    store.dispatch('initializeCharacter');
   }
 });
 
