@@ -4,6 +4,7 @@ import GameView from '../views/GameView.vue'
 import GameOverView from '../views/GameOverView.vue'
 import RulesView from '../views/RulesView.vue'
 import VictoryView from '../views/VictoryView.vue'
+import NotFoundView from '../views/NotFoundView.vue'
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/victory',
     name: 'Victory',
     component: VictoryView
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: NotFoundView
   }
 ]
 

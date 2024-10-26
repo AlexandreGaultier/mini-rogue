@@ -150,6 +150,11 @@ button {
   padding: 10px 20px;
   font-size: 16px;
 }
+button:hover {
+  border: none;
+  transition: all 0.3s ease-in-out;
+  color: #FF7043;
+}
 
 button:disabled {
   opacity: 0.5;

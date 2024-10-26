@@ -80,7 +80,7 @@
               </template>
               <template v-else-if="currentTile === i && pendingLoot">
                 <p>Butin : {{ formatReward(pendingLoot) }}</p>
-                <button @click="collectMonsterLoot(i)">
+                <button class="collect-monster-loot-button" @click="collectMonsterLoot(i)">
                   Récupérer le butin
                 </button>
               </template>
@@ -671,6 +671,17 @@ h3 {
 
 .monster-damage {
   color: #FF7043 !important; /* Rouge-orange plus doux */
+}
+
+.collect-monster-loot-button {
+  background-color: #242424;
+  padding: 1rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.collect-monster-loot-button:hover {
+  background-color: #1d1d1d;
+  color: #FF7043;
 }
 
 button {
