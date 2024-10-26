@@ -14,8 +14,14 @@
             <p>{{ tileContent(i).description }}</p>
             <!-- Affichage spécifique pour les monstres -->
             <template v-if="tileContent(i).type === 'monster'">
-              <p>Vie: {{ tileContent(i).health }}</p>
-              <p>Dégâts: {{ tileContent(i).damage }}</p>
+              <div class="monster-health-container">
+                <label class="monster-health-label" for="health">Vie : </label>
+                <p class="monster-health">{{ tileContent(i).health }}</p>
+              </div>
+              <div class="monster-damage-container">
+                <label class="monster-damage-label" for="damage">Dégats : </label>
+                <p class="monster-damage">{{ tileContent(i).damage }}</p>
+              </div>
             </template>
             <!-- Affichage pour les récompenses, bénéfices et pièges -->
             <template v-if="['reward', 'beneficial', 'trap'].includes(tileContent(i).type)">
@@ -245,6 +251,9 @@ function checkAvailableTiles() {
 // Fonctions de gestion des mécanismes de jeu
 function rollDice(tileNumber) {
   const tile = tileContent(tileNumber);
+  if (tile.immediateReward) {
+    applyImmediateReward(tile.immediateReward);
+  }
   const faces = tile.mechanism === 'DiceRoll2' ? 2 : 
                 tile.mechanism === 'DiceRoll3' ? 3 : 6;
   diceRolling[tileNumber] = true;
@@ -500,7 +509,7 @@ function getDiceSymbol(roll) {
 
 function applyImmediateReward(immediateReward) {
   console.log('Applying immediate reward:', immediateReward); // Log pour vérifier l'application de la récompense
-  if (immediateReward.effect) {
+  if (immediateReward && immediateReward.effect) {
     if (typeof immediateReward.effect === 'object') {
       Object.entries(immediateReward.effect).forEach(([stat, value]) => {
         console.log(`Updating stat: ${stat} by ${value}`); // Log pour chaque mise à jour de stat
@@ -541,7 +550,7 @@ function applyImmediateReward(immediateReward) {
 
 .tile {
   background-color: var(--color-dark-gray);
-  border: 1px solid var(--color-accent);
+  border: 1px solid #E0E0E0;
   border-radius: 0.5rem;
   padding: 0.8rem; /* Réduit le padding */
   text-align: center;
@@ -558,6 +567,7 @@ function applyImmediateReward(immediateReward) {
 }
 
 .tile.available {
+  border: 1px solid var(--color-accent);
   opacity: 1;
   cursor: pointer;
 }
@@ -637,6 +647,32 @@ h3 {
   color: var(--color-text); /* Couleur de texte normale pour les récompenses */
 }
 
+.monster-health-container {
+  display: flex;
+  align-items: center;
+}
+
+.monster-health-label {
+  margin-right: 0.5rem;
+}
+
+.monster-health {
+  color: #8BC34A !important; /* Vert plus doux */
+}
+
+.monster-damage-container {
+  display: flex;
+  align-items: center;
+}
+
+.monster-damage-label {
+  margin-right: 0.5rem;
+}
+
+.monster-damage {
+  color: #FF7043 !important; /* Rouge-orange plus doux */
+}
+
 button {
   margin-top: 0.5rem;
   padding: 0.4rem 0.8rem; /* Réduit le padding */
@@ -664,12 +700,19 @@ button:disabled {
   margin-top: 1rem;
   padding: 0.6rem 1.2rem; /* Réduit le padding */
   font-size: 1rem; /* Réduit la taille de la police */
-  background-color: var(--color-accent);
+  background-color: var(--color-dark-gray);
+  box-shadow: 0 0 10px rgba(29, 29, 29, 0.7);
   color: white;
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
   align-self: center;
+}
+
+.continue-button:hover {
+  background-color: #242424;
+  color: #FF7043;
+  transition: all 0.3s ease-in-out;
 }
 
 .tile.completed {
@@ -769,6 +812,7 @@ button:disabled {
   color: rgba(255, 255, 255, 0.8);
 }
 </style>
+
 
 
 

@@ -448,7 +448,11 @@
       "difficulty": 3,
       "mechanism": "DiceRoll2",
       "description": "Des miroirs déformants tapissent les murs, créant des reflets cauchemardesques de vous-même.",
-      "effect": { "hp": -2, "exp": -1 },
+      "immediateReward": {
+        "text": "Perdez 2 PV et 1 point d'expérience",
+        "effect": { "hp": -2, "exp": -1 },
+        "color": "red"
+      },
       "rollRewards": {
         "1": {
           "text": "Percez les illusions : +3 exp",
