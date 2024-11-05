@@ -458,12 +458,10 @@ function handleLoreTile(tileNumber) {
 }
 
 function handleMerchantTile(tileNumber) {
-  const tile = tileContent(tileNumber);
   const lore = dungeonLore.value[currentLoreIndex.value];
   store.commit('ADD_LOG_MESSAGE', `Le marchand murmure : "${lore}"`);
   currentLoreIndex.value = (currentLoreIndex.value + 1) % dungeonLore.value.length;
   
-  store.commit('SET_MERCHANT_CHOICES', tile.choices);
   store.commit('SET_CURRENT_MERCHANT_TILE', tileNumber);
 }
 
@@ -482,10 +480,22 @@ function getRandomLore() {
 }
 
 function completeMerchantTile(tileNumber) {
+  const tile = tileContent(tileNumber);
+
   rewardsCollected[tileNumber] = true;
   merchantInteractionCompleted[tileNumber] = true;
   revealAdjacentTiles(tileNumber);
   store.commit('SET_CURRENT_MERCHANT_TILE', null);
+
+   // Créer une nouvelle copie des choix avec purchased à false
+   const newChoices = tile.choices.map(choice => ({
+    ...choice,
+    purchased: false
+  }));
+  
+  // Mettre à jour les choix du marchand
+  tile.choices = newChoices;
+  store.commit('SET_MERCHANT_CHOICES', newChoices);
 }
 
 function getRewardColorClass(reward) {
