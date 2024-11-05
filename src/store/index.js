@@ -62,7 +62,10 @@ export default createStore({
       state.pendingLoot = null;
     },
     SET_MERCHANT_CHOICES(state, choices) {
-      state.merchantChoices = choices;
+      state.merchantChoices = choices.map(choice => ({
+        ...choice,
+        purchased: false
+      }));
     },
     SET_CURRENT_MERCHANT_TILE(state, tileNumber) {
       state.currentMerchantTile = tileNumber;
