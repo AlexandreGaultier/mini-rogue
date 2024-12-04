@@ -832,6 +832,50 @@ button:disabled {
 .tile p:not(.immediate-reward):not(.roll-rewards li) {
   color: rgba(255, 255, 255, 0.8);
 }
+
+@media screen and (max-width: 768px) {
+  .tiles-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .tile {
+    min-height: 90px;
+    padding: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .tile h3 {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .merchant-choices button {
+    padding: 0.4rem;
+    font-size: 0.8rem;
+  }
+
+  .continue-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+
+  .tile-details {
+    width: 90%;
+    padding: 0.5rem;
+  }
+
+  .monster-health-container,
+  .monster-damage-container {
+    font-size: 0.8rem;
+  }
+
+  .dice-result {
+    font-size: 1rem !important;
+  }
+}
 </style>
 
 

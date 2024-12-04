@@ -111,4 +111,43 @@ h3 {
   font-size: 12px;
   text-shadow: 0 0 3px #ff4500;
 }
+
+@media screen and (max-width: 768px) {
+  .dungeon-tree {
+    padding: 0.5rem 0;
+    margin: 0 auto;
+    width: 85%;
+  }
+
+  h3 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  .floor {
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+
+  .floor-label {
+    width: 50px;
+    font-size: 0.8em;
+  }
+
+  .room {
+    width: 25px;
+    height: 25px;
+    font-size: 0.7em;
+  }
+
+  .rooms {
+    gap: 5px;
+  }
+
+  .boss-icon {
+    font-size: 10px;
+    top: -8px;
+    right: -3px;
+  }
+}
 </style>

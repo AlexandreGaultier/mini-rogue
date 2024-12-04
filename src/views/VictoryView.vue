@@ -103,4 +103,16 @@ button {
 button:hover {
   background-color: var(--color-primary);
 }
+
+@media screen and (max-width: 768px) {
+  .victory-text {
+    font-size: 1rem;
+    margin: 1rem 0;
+  }
+
+  button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}
 </style>

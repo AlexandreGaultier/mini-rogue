@@ -112,4 +112,36 @@ const character = computed(() => store.getters.character);
 .armor-gauge .gauge-fill { background-color: #95a5a6; }
 .gold-gauge .gauge-fill { background-color: #f1c40f; }
 .rations-gauge .gauge-fill { background-color: #d35400; }
+
+@media screen and (max-width: 768px) {
+  .character-board {
+    padding: 0.5rem;
+    width: 85%;
+    margin: 0 auto;
+  }
+
+  .character-header h2 {
+    font-size: 1rem;
+  }
+
+  .level-section {
+    font-size: 0.8em;
+  }
+
+  .gauge-label {
+    font-size: 0.7em;
+  }
+
+  .gauge-bar {
+    height: 12px;
+  }
+
+  .gauges {
+    gap: 8px;
+  }
+
+  .gauge-row {
+    gap: 8px;
+  }
+}
 </style>

@@ -119,4 +119,20 @@ button {
 button:hover {
   background-color: #ff0000;
 }
+
+@media screen and (max-width: 768px) {
+  h1 {
+    font-size: 3rem;
+  }
+
+  .death-message {
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  button {
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+  }
+}
 </style>

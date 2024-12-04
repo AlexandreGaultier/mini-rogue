@@ -109,6 +109,22 @@ function nextChamber() {
   height: 100%;
 }
 
+@media screen and (max-width: 768px) {
+  .game-board {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .left-panel {
+    width: 100%;
+    padding: 1rem 0;
+  }
+
+  .main-panel {
+    padding: 10px;
+  }
+}
+
 :deep(.chamber) {
   flex: 1;
   display: flex;

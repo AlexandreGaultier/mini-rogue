@@ -62,4 +62,20 @@ button {
 button:hover {
   background-color: var(--color-accent-hover);
 }
+
+@media screen and (max-width: 768px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
 </style>

@@ -230,4 +230,27 @@ li {
   75% { left: 10%; top: 10%; }
   100% { left: 10%; top: 90%; }
 }
+
+@media screen and (max-width: 768px) {
+  .rules-view {
+    padding: 1rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .cards-container {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  .back-button {
+    padding: 0.8rem;
+    font-size: 0.9rem;
+  }
+}
 </style>

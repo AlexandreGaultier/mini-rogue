@@ -231,26 +231,30 @@ h2 {
 }
 
 .characters {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(2, auto);
-  gap: 1rem;
-  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
 }
 
 .character {
   background-color: rgba(26, 26, 26, 0.8);
-  border-radius: 10px;
+  border: none;
   box-shadow: 0 0 0.1rem #ffffff3b;
-  padding: 1.5rem;
+  border-radius: 10px;
+  padding: 1.5rem 0.6rem;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  opacity: 1;
-  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+  aspect-ratio: 3 / 1.5;
+  font-size: 0.8rem;
+  width: calc(50% - 0.8rem);
+  min-width: 250px;
+  max-width: 300px;
+  margin: 0;
 }
 
 .character:hover {
@@ -276,6 +280,8 @@ h2 {
   display: flex;
   flex-direction: row;
   gap: 0.8rem;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .dungeon {
@@ -283,17 +289,19 @@ h2 {
   border: none;
   box-shadow: 0 0 0.1rem #ffffff3b;
   border-radius: 10px;
-  padding: 1.5rem 0.6rem; /* Réduit le padding */
+  padding: 1.5rem 0.6rem;
   cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  aspect-ratio: 3 / 1.5; /* Réduit la hauteur */
-  font-size: 0.8rem; /* Réduit la taille de la police */
-  max-width: 300px; /* Limite la largeur maximale */
-  margin: 0 auto; /* Centre les donjons horizontalement */
+  aspect-ratio: 3 / 1.5;
+  font-size: 0.8rem;
+  width: calc(50% - 0.8rem);
+  min-width: 250px;
+  max-width: 300px;
+  margin: 0;
 }
 
 .dungeon:hover {
@@ -308,7 +316,7 @@ h2 {
 
 .dungeon h3 {
   color: var(--color-primary);
-  font-size: 1rem; /* Réduit la taille du titre */
+  font-size: 1rem;
   margin-bottom: 0.2rem;
 }
 
@@ -445,5 +453,74 @@ button:disabled {
 
 .rules-button:hover {
   background-color: #ffffff6b;
+}
+
+@media screen and (max-width: 768px) {
+  .game-title {
+    font-size: 3rem;
+    letter-spacing: 0.2rem;
+  }
+
+  .start-prompt {
+    font-size: 1rem;
+  }
+
+  .game-content {
+    padding: 1rem 0;
+  }
+
+  .characters {
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+
+  .character {
+    width: 100%;
+    min-width: unset;
+    aspect-ratio: auto;
+    padding: 1rem;
+  }
+
+  .character h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .character p {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .buttons-container {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  button {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .dungeons {
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+
+  .dungeon {
+    width: 100%;
+    min-width: unset;
+    aspect-ratio: auto;
+    padding: 1rem;
+  }
+
+  .dungeon h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .dungeon p {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
 }
 </style>

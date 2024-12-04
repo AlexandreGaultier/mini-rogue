@@ -51,4 +51,16 @@ main {
   border-radius: 5px;
   min-height: 80vh;
 }
+
+@media screen and (max-width: 768px) {
+  #container {
+    font-size: 14px;
+  }
+
+  main {
+    min-height: 100vh;
+    padding: 0;
+  }
+}
+
 </style>
