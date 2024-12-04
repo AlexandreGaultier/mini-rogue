@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import gameData from '../data/game-data.json';
@@ -71,8 +71,14 @@ const selectedDungeon = ref(dungeons.value[0]); // Sélectionne le premier donjo
 const gameStarted = ref(false);
 const showLorePopup = ref(false);
 const currentLoreItem = ref(null);
+const audio = ref(null); // Utiliser ref pour l'audio
 
-let audio;
+async function initAudio() {
+  const audioModule = await import('../assets/music/intro.mp3');
+  audio.value = new Audio(audioModule.default);
+  audio.value.loop = true;
+  audio.value.volume = store.state.volume;
+}
 
 function selectCharacter(character) {
   selectedCharacter.value = character;
@@ -84,7 +90,8 @@ function selectDungeon(dungeon) {
 
 async function startGame() {
   gameStarted.value = true;
-  await startAudio();
+  await initAudio();
+  audio.value.play();
 }
 
 function startAdventure() {
@@ -107,24 +114,19 @@ function closeLorePopup() {
   currentLoreItem.value = null;
 }
 
-async function startAudio() {
-  if (!audio) {
-    const audioModule = await import('../assets/music/intro.mp3');
-    audio = new Audio(audioModule.default);
-    audio.loop = true;
-    audio.volume = 0.7;
-  }
-  
-  try {
-    await audio.play();
-  } catch (error) {
-    console.error('Erreur lors de la lecture audio:', error);
-  }
-}
-
 function goToRules() {
   router.push('/rules');
 }
+
+// Watcher pour le volume
+watch(
+  () => store.state.volume,
+  (newVolume) => {
+    if (audio.value) {
+      audio.value.volume = newVolume;
+    }
+  }
+);
 
 onMounted(() => {
   // Sélectionne un personnage aléatoire parmi ceux qui ne sont pas désactivés
@@ -134,9 +136,9 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
-  if (audio) {
-    audio.pause();
-    audio.currentTime = 0;
+  if (audio.value) {
+    audio.value.pause();
+    audio.value = null;
   }
 });
 </script>

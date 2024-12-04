@@ -22,6 +22,7 @@ export default createStore({
     merchantChoices: [],
     currentMerchantTile: null,
     logMessages: [],
+    volume: 0.7
   },
   mutations: {
     SET_CHARACTER(state, character) {
@@ -81,6 +82,9 @@ export default createStore({
     },
     SET_CURRENT_CHAMBER(state, chamber) {
       state.currentChamber = chamber;
+    },
+    SET_VOLUME(state, volume) {
+      state.volume = volume;
     },
   },
   actions: {

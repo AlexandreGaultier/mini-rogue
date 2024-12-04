@@ -72,40 +72,50 @@
 </template>
 
 <script setup>
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { onMounted, onUnmounted } from 'vue';
+import { useStore } from 'vuex';
 
 const router = useRouter();
-
-let audio;
+const store = useStore();
+const audio = ref(null);
 
 function goBack() {
   router.push('/');
 }
 
 async function startAudio() {
-  if (!audio) {
+  if (!audio.value) {
     const audioModule = await import('../assets/music/background4.mp3');
-    audio = new Audio(audioModule.default);
-    audio.loop = true;
-    audio.volume = 0.3;
+    audio.value = new Audio(audioModule.default);
+    audio.value.loop = true;
+    audio.value.volume = store.state.volume;
   }
   
   try {
-    await audio.play();
+    await audio.value.play();
   } catch (error) {
     console.error('Erreur lors de la lecture audio:', error);
   }
 }
+
+watch(
+  () => store.state.volume,
+  (newVolume) => {
+    if (audio.value) {
+      audio.value.volume = newVolume;
+    }
+  }
+);
 
 onMounted(async () => {
   await startAudio();
 });
 
 onUnmounted(() => {
-  if (audio) {
-    audio.pause();
-    audio.currentTime = 0;
+  if (audio.value) {
+    audio.value.pause();
+    audio.value = null;
   }
 });
 </script>

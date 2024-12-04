@@ -40,20 +40,30 @@ watch(() => character.value.hp, (newHp) => {
   }
 });
 
-let audio;
+const audio = ref(null);
 
 onMounted(async () => {
   const audioModule = await import('../assets/music/background1.mp3');
-  audio = new Audio(audioModule.default);
-  audio.loop = true;
-  audio.volume = 0.3;
-  audio.play();
+  audio.value = new Audio(audioModule.default);
+  audio.value.loop = true;
+  audio.value.volume = store.state.volume;
+  audio.value.play();
 });
 
+// Watcher pour le volume
+watch(
+  () => store.state.volume,
+  (newVolume) => {
+    if (audio.value) {
+      audio.value.volume = newVolume;
+    }
+  }
+);
+
 onUnmounted(() => {
-  if (audio) {
-    audio.pause();
-    audio.currentTime = 0;
+  if (audio.value) {
+    audio.value.pause();
+    audio.value = null;
   }
 });
 

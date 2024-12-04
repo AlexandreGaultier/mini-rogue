@@ -13,30 +13,40 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { useStore } from 'vuex';
 import gameData from '../data/game-data.json';
 
 const router = useRouter();
+const store = useStore();
 const deathMessage = ref('');
-
-let audio;
+const audio = ref(null);
 
 onMounted(async () => {
   const messages = gameData.gameOverDialogues;
   deathMessage.value = messages[Math.floor(Math.random() * messages.length)];
 
   const audioModule = await import('../assets/music/gameover1.mp3');
-  audio = new Audio(audioModule.default);
-  audio.loop = false;
-  audio.volume = 0.7;
-  audio.play();
+  audio.value = new Audio(audioModule.default);
+  audio.value.loop = false;
+  audio.value.volume = store.state.volume;
+  audio.value.play();
 });
 
+watch(
+  () => store.state.volume,
+  (newVolume) => {
+    if (audio.value) {
+      audio.value.volume = newVolume;
+    }
+  }
+);
+
 onUnmounted(() => {
-  if (audio) {
-    audio.pause();
-    audio.currentTime = 0;
+  if (audio.value) {
+    audio.value.pause();
+    audio.value = null;
   }
 });
 
